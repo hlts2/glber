@@ -12,11 +12,11 @@ type Config struct {
 	Balancing string  `yaml:"balancing"`
 }
 
-// Server represents domain name for server
+// Server is address of address
 type Server string
 
-// Servers is Server(string) slice
-type Servers []Server
+// Servers is slice of Server
+type Servers []string
 
 // LoadConfig load config for load balancer
 func LoadConfig(filename string) (*Config, error) {
