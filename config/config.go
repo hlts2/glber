@@ -6,7 +6,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// Config represents config file for load balancer
+// Config represents config file for loadbalancer
 type Config struct {
 	Servers   Servers `yaml:"servers"`
 	Balancing string  `yaml:"balancing"`
@@ -23,7 +23,7 @@ func (ss Servers) ToStringSlice() []string {
 	return []string(ss)
 }
 
-// LoadConfig load config for load balancer
+// LoadConfig loads config for loadbalancer
 func LoadConfig(filename string) (*Config, error) {
 	f, err := os.Open(filename)
 	if err != nil {
