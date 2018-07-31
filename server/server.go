@@ -10,11 +10,25 @@ import (
 // LBServer represents load balancing server object
 type LBServer struct {
 	*http.Server
+	lbConf config.Config
 }
 
 // Build builds LB config
-func (lbs *LBServer) Build(conf config.Config) {
+func (lbs *LBServer) Build(conf config.Config) *LBServer {
+	lbs.lbConf = conf
 
+	switch conf.Balancing {
+	case "ip-hash":
+		// TODO Load ip-hash balancing algorithm
+	case "round-robin":
+		// TODO Load round-robin balancing algorithm
+	case "least-connections":
+		// TODO Load least-connection balancing algorithm
+	default:
+		// TODO proxy
+	}
+
+	return lbs
 }
 
 // ListenAndServeTLS runs load balancing server with TLS
