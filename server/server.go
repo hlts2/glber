@@ -5,12 +5,19 @@ import (
 	"net/http"
 
 	"github.com/hlts2/go-LB/config"
+	"github.com/hlts2/round-robin"
 )
+
+// Balancing is base balancing interface
+type Balancing interface {
+	Next() string
+}
 
 // LBServer represents load balancing server object
 type LBServer struct {
 	*http.Server
-	lbConf config.Config
+	lbConf    config.Config
+	balancing Balancing
 }
 
 // Build builds LB config
@@ -21,7 +28,10 @@ func (lbs *LBServer) Build(conf config.Config) *LBServer {
 	case "ip-hash":
 		// TODO Load ip-hash balancing algorithm
 	case "round-robin":
-		// TODO Load round-robin balancing algorithm
+		rr, err := roundrobin.New(conf.Servers.ToStringSlice())
+		if err == nil {
+			lbs.balancing = rr
+		}
 	case "least-connections":
 		// TODO Load least-connection balancing algorithm
 	default:
