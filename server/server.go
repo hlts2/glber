@@ -46,8 +46,8 @@ func (lbs *lbServer) Serve() error {
 	return nil
 }
 
-// NewLBServerByTLS returns Server(*server) object
-func NewLBServerByTLS(addr string, tlsConfig *tls.Config, lbConf config.Config) (LBServerTLS, error) {
+// NewLBServerTLS returns Server(*server) object
+func NewLBServerTLS(addr string, tlsConfig *tls.Config, lbConf config.Config) (LBServerTLS, error) {
 	lbs := new(lbServer)
 
 	lbs.s = &http.Server{
