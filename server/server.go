@@ -4,31 +4,24 @@ import (
 	"crypto/tls"
 	"net/http"
 
-	"github.com/pkg/errors"
-
 	"github.com/hlts2/go-LB/config"
-	"github.com/hlts2/round-robin"
 )
 
-// LBServerTLS represents base TLS load balancing server interface
-type LBServerTLS interface {
-	ServeTLS(string, string) error
+// LBServer represents load balancing server object
+type LBServer struct {
+	*http.Server
 }
 
-// LBServer represents base load balancing server interface
-type LBServer interface {
-	Serve() error
+// Build builds LB config
+func (lbs *LBServer) Build(conf config.Config) {
+
 }
 
-// lbServer represents load balancing server object
-type lbServer struct {
-	s  *http.Server
-	rr roundrobin.RoundRobin
-}
+// ListenAndServeTLS runs load balancing server with TLS
+func (lbs *LBServer) ListenAndServeTLS(tlsConfig *tls.Config, certFile, keyFile string) error {
+	lbs.TLSConfig = tlsConfig
 
-// ServeTLS runs load balancing server with TLS
-func (lbs *lbServer) ServeTLS(certFile, keyFile string) error {
-	err := lbs.s.ListenAndServeTLS(certFile, keyFile)
+	err := lbs.Server.ListenAndServeTLS(certFile, keyFile)
 	if err != nil {
 		return err
 	}
@@ -36,9 +29,9 @@ func (lbs *lbServer) ServeTLS(certFile, keyFile string) error {
 	return nil
 }
 
-// Serv runs load balancing server
-func (lbs *lbServer) Serve() error {
-	err := lbs.s.ListenAndServe()
+// ListenAndServe runs load balancing server
+func (lbs *LBServer) ListenAndServe() error {
+	err := lbs.Server.ListenAndServe()
 	if err != nil {
 		return err
 	}
@@ -46,41 +39,10 @@ func (lbs *lbServer) Serve() error {
 	return nil
 }
 
-// NewLBServerTLS returns Server(*server) object
-func NewLBServerTLS(addr string, tlsConfig *tls.Config, lbConf config.Config) (LBServerTLS, error) {
-	lbs := new(lbServer)
-
-	lbs.s = &http.Server{
-		Addr:      addr,
-		TLSConfig: tlsConfig,
-		Handler:   http.HandlerFunc(lbs.passthrogh),
-	}
-
-	rr, err := roundrobin.New(lbConf.Servers.ToStringSlice())
-	if err != nil {
-		return nil, errors.Wrap(err, "round-robin error")
-	}
-
-	lbs.rr = rr
-
-	return lbs, nil
-}
-
-// NewLBServer returns Server(*server) object
-func NewLBServer(addr string, lbConf config.Config) (LBServer, error) {
-	lbs := new(lbServer)
-
-	lbs.s = &http.Server{
-		Addr:    addr,
-		Handler: http.HandlerFunc(lbs.passthrogh),
-	}
-
-	rr, err := roundrobin.New(lbConf.Servers.ToStringSlice())
-	if err != nil {
-		return nil, errors.Wrap(err, "round-robin error")
-	}
-
-	lbs.rr = rr
-
-	return lbs, nil
+// NewLBServer returns LBServer object
+func NewLBServer(addr string) *LBServer {
+	lbs := new(LBServer)
+	lbs.Addr = addr
+	lbs.Handler = http.HandlerFunc(lbs.passthrogh)
+	return lbs
 }
