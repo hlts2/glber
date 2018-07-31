@@ -2,35 +2,31 @@ package server
 
 import (
 	"net/http"
-
-	iphash "github.com/hlts2/ip-hash"
-	"github.com/hlts2/least-connections"
-	"github.com/hlts2/round-robin"
 )
 
-func (s *LBServer) balancingLeastConnections(w http.ResponseWriter, req *http.Request) {
-	lc := s.balancing.(leastconnections.LeastConnections)
+func (lbs *LBServer) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request) {
+	lc := lbs.getLeastConnections()
 
 	destAddr := lc.Next()
 
 	lc.IncrementConnections(destAddr)
-	s.passthrogh(w, req)
+	lbs.reverseProxy(destAddr, w, req)
 	lc.DecrementConnections(destAddr)
 
 }
 
-func (s *LBServer) balancingRoundRobin(w http.ResponseWriter, req *http.Request) {
-	rr := s.balancing.(roundrobin.RoundRobin)
-	_ = rr.Next()
-	s.passthrogh(w, req)
+func (lbs *LBServer) roundRobinBalancing(w http.ResponseWriter, req *http.Request) {
+	rr := lbs.getRoundRobin()
+	destAddr := rr.Next()
+	lbs.reverseProxy(destAddr, w, req)
 }
 
-func (s *LBServer) balancingIPHash(w http.ResponseWriter, req *http.Request) {
-	ic := s.balancing.(iphash.IPHash)
-	_ = ic.Next(req.RemoteAddr)
-	s.passthrogh(w, req)
+func (lbs *LBServer) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
+	ih := lbs.getIPHash()
+	destAddr := ih.Next(req.RemoteAddr)
+	lbs.reverseProxy(destAddr, w, req)
 }
 
-func (s *LBServer) passthrogh(w http.ResponseWriter, req *http.Request) {
+func (lbs *LBServer) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Request) {
 
 }
