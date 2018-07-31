@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/hlts2/go-LB/config"
+	"github.com/hlts2/least-connections"
 	"github.com/hlts2/round-robin"
 )
 
@@ -41,7 +42,10 @@ func (lbs *LBServer) Build(conf config.Config) *LBServer {
 			lbs.balancing = rr
 		}
 	case "least-connections":
-		// TODO Load least-connection balancing algorithm
+		ll, err := leastconnections.New(conf.Servers.ToStringSlice())
+		if err == nil {
+			lbs.balancing = ll
+		}
 	default:
 		// TODO proxy
 	}
