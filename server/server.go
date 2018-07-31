@@ -5,14 +5,13 @@ import (
 	"net/http"
 
 	"github.com/hlts2/go-LB/config"
+	iphash "github.com/hlts2/ip-hash"
 	"github.com/hlts2/least-connections"
 	"github.com/hlts2/round-robin"
 )
 
-// Balancing is base balancing interface
-type Balancing interface {
-	Next() string
-}
+// Balancing is custom type of balancing algorithm
+type Balancing interface{}
 
 // LBServer represents load balancing server object
 type LBServer struct {
@@ -25,7 +24,6 @@ type LBServer struct {
 func NewLBServer(addr string) *LBServer {
 	lbs := new(LBServer)
 	lbs.Addr = addr
-	lbs.Handler = http.HandlerFunc(lbs.passthrogh)
 	return lbs
 }
 
@@ -35,17 +33,23 @@ func (lbs *LBServer) Build(conf config.Config) *LBServer {
 
 	switch conf.Balancing {
 	case "ip-hash":
-		// TODO Load ip-hash balancing algorithm
+		ih, err := iphash.New(conf.Servers.ToStringSlice())
+		if err == nil {
+			lbs.balancing = ih
+		}
+		lbs.Handler = http.HandlerFunc(lbs.balancingLeastConnections)
 	case "round-robin":
 		rr, err := roundrobin.New(conf.Servers.ToStringSlice())
 		if err == nil {
 			lbs.balancing = rr
 		}
+		lbs.Handler = http.HandlerFunc(lbs.balancingRoundRobin)
 	case "least-connections":
 		ll, err := leastconnections.New(conf.Servers.ToStringSlice())
 		if err == nil {
 			lbs.balancing = ll
 		}
+		lbs.Handler = http.HandlerFunc(lbs.balancingIPHash)
 	default:
 		// TODO proxy
 	}
