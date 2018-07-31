@@ -16,7 +16,6 @@ type Balancing interface{}
 // LBServer represents load balancing server object
 type LBServer struct {
 	*http.Server
-	lbConf    config.Config
 	balancing Balancing
 }
 
@@ -29,8 +28,6 @@ func NewLBServer(addr string) *LBServer {
 
 // Build builds LB config
 func (lbs *LBServer) Build(conf config.Config) *LBServer {
-	lbs.lbConf = conf
-
 	switch conf.Balancing {
 	case "ip-hash":
 		ih, err := iphash.New(conf.Servers.ToStringSlice())
