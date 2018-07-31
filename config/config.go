@@ -18,6 +18,11 @@ type Server string
 // Servers is slice of Server
 type Servers []string
 
+// ToStringSlice converts Servers to []string type
+func (ss Servers) ToStringSlice() []string {
+	return []string(ss)
+}
+
 // LoadConfig load config for load balancer
 func LoadConfig(filename string) (*Config, error) {
 	f, err := os.Open(filename)
