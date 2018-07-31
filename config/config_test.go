@@ -45,6 +45,34 @@ func TestLoadConfig(t *testing.T) {
 	}
 }
 
+func TestToStringSlice(t *testing.T) {
+	tests := []struct {
+		servers  Servers
+		expected []string
+	}{
+		{
+			servers: Servers{
+				"192.168.33.10:1111",
+				"192.168.33.10:2222",
+				"192.168.33.10:3333",
+			},
+			expected: []string{
+				"192.168.33.10:1111",
+				"192.168.33.10:2222",
+				"192.168.33.10:3333",
+			},
+		},
+	}
+
+	for i, test := range tests {
+		got := test.servers.ToStringSlice()
+
+		if !reflect.DeepEqual(test.expected, got) {
+			t.Errorf("tests[%d] - ToStringSlice is wrong. expected: %v, got: %v", i, test.expected, got)
+		}
+	}
+}
+
 func createFile(filename string, data []byte) {
 	ioutil.WriteFile(filename, data, os.ModePerm)
 }
