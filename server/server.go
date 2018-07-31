@@ -20,6 +20,14 @@ type LBServer struct {
 	balancing Balancing
 }
 
+// NewLBServer returns LBServer object
+func NewLBServer(addr string) *LBServer {
+	lbs := new(LBServer)
+	lbs.Addr = addr
+	lbs.Handler = http.HandlerFunc(lbs.passthrogh)
+	return lbs
+}
+
 // Build builds LB config
 func (lbs *LBServer) Build(conf config.Config) *LBServer {
 	lbs.lbConf = conf
@@ -61,12 +69,4 @@ func (lbs *LBServer) ListenAndServe() error {
 	}
 
 	return nil
-}
-
-// NewLBServer returns LBServer object
-func NewLBServer(addr string) *LBServer {
-	lbs := new(LBServer)
-	lbs.Addr = addr
-	lbs.Handler = http.HandlerFunc(lbs.passthrogh)
-	return lbs
 }
