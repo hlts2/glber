@@ -32,7 +32,6 @@ func (lbs *LBServer) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
 	lbs.reverseProxy(destAddr, w, req)
 }
 
-// TODO copy header
 // TODO add header for proxy
 func (lbs *LBServer) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Request) {
 	req.Host = destAddr
@@ -52,13 +51,11 @@ func (lbs *LBServer) reverseProxy(destAddr string, w http.ResponseWriter, req *h
 		http.SetCookie(w, cokkie)
 	}
 
-	contents := readCloserToByte(resp.Body)
-	if err != nil {
-		glg.Println(err)
-		return
-	}
+	copyResponseHeader(w, resp)
 
 	w.WriteHeader(resp.StatusCode)
+
+	contents := readCloserToByte(resp.Body)
 	w.Write(contents)
 }
 
@@ -66,4 +63,13 @@ func readCloserToByte(readCloser io.ReadCloser) []byte {
 	buf := new(bytes.Buffer)
 	io.Copy(buf, readCloser)
 	return buf.Bytes()
+}
+
+func copyResponseHeader(dest http.ResponseWriter, src *http.Response) {
+	for key, values := range src.Header {
+		dest.Header().Del(key)
+		for _, value := range values {
+			dest.Header().Add(key, value)
+		}
+	}
 }
