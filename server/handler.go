@@ -5,13 +5,13 @@ import (
 )
 
 func (lbs *LBServer) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request) {
-	lc := lbs.balancing.GetLeastConnections()
-
-	destAddr := lc.Next()
-
-	lc.IncrementConnections(destAddr)
-	lbs.reverseProxy(destAddr, w, req)
-	lc.DecrementConnections(destAddr)
+	// lc := lbs.balancing.GetLeastConnections()
+	//
+	// destAddr := lc.Next()
+	//
+	// lc.IncrementConnections(destAddr)
+	// lbs.reverseProxy(destAddr, w, req)
+	// lc.DecrementConnections(destAddr)
 }
 
 func (lbs *LBServer) roundRobinBalancing(w http.ResponseWriter, req *http.Request) {
