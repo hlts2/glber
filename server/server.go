@@ -4,13 +4,17 @@ import (
 	"crypto/tls"
 	"net/http"
 
+	"github.com/pkg/errors"
+
 	b "github.com/hlts2/go-LB/balancing"
 	"github.com/hlts2/go-LB/config"
 	iphash "github.com/hlts2/ip-hash"
 	"github.com/hlts2/least-connections"
 	"github.com/hlts2/round-robin"
-	"github.com/kpango/glg"
 )
+
+// ErrNotBalancingAlgorithm is error that balancing algorithm dose not found
+var ErrNotBalancingAlgorithm = errors.New("balancing algorithm dose not found")
 
 // LBServer represents load balancing server object
 type LBServer struct {
@@ -26,12 +30,12 @@ func NewLBServer(addr string) *LBServer {
 }
 
 // Build builds LB config
-func (lbs *LBServer) Build(conf config.Config) *LBServer {
+func (lbs *LBServer) Build(conf config.Config) (*LBServer, error) {
 	switch conf.Balancing {
 	case "ip-hash":
 		ih, err := iphash.New(conf.Servers.ToStringSlice())
 		if err != nil {
-			return nil
+			return nil, errors.Wrap(err, "ip-hash algorithm")
 		}
 
 		lbs.balancing = b.New(ih)
@@ -39,7 +43,7 @@ func (lbs *LBServer) Build(conf config.Config) *LBServer {
 	case "round-robin":
 		rr, err := roundrobin.New(conf.Servers.ToStringSlice())
 		if err == nil {
-			return nil
+			return nil, errors.Wrap(err, "round-robin algorithm")
 		}
 
 		lbs.balancing = b.New(rr)
@@ -47,16 +51,16 @@ func (lbs *LBServer) Build(conf config.Config) *LBServer {
 	case "least-connections":
 		lc, err := leastconnections.New(conf.Servers.ToStringSlice())
 		if err == nil {
-			return nil
+			return nil, errors.Wrap(err, "least-connections algorithm")
 		}
 
 		lbs.balancing = b.New(lc)
 		lbs.Handler = http.HandlerFunc(lbs.ipHashBalancing)
 	default:
-		glg.Fatal("balancing algorithm dose not found")
+		return nil, ErrNotBalancingAlgorithm
 	}
 
-	return lbs
+	return lbs, nil
 }
 
 // ListenAndServeTLS runs load balancing server with TLS

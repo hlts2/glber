@@ -29,5 +29,4 @@ func (lbs *LBServer) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
 }
 
 func (lbs *LBServer) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Request) {
-
 }
