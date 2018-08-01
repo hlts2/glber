@@ -6,7 +6,7 @@ import (
 	roundrobin "github.com/hlts2/round-robin"
 )
 
-// Balancing is balancing algorithm wrapper object for reverse proxy
+// Balancing is wrapper object of balancing algorithm for reverse proxy
 type Balancing struct {
 	algorithm interface{}
 }

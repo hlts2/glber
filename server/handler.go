@@ -8,55 +8,55 @@ import (
 	"github.com/kpango/glg"
 )
 
-func (lbs *LBServer) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request) {
-	lc := lbs.balancing.GetLeastConnections()
+func (lb *LB) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request) {
+	lc := lb.balancing.GetLeastConnections()
 
 	destAddr := lc.Next()
 
 	lc.IncrementConnections(destAddr)
-	lbs.reverseProxy(destAddr, w, req)
+	lb.reverseProxy(destAddr, w, req)
 	lc.DecrementConnections(destAddr)
 }
 
-func (lbs *LBServer) roundRobinBalancing(w http.ResponseWriter, req *http.Request) {
-	rr := lbs.balancing.GetRoundRobin()
+func (lb *LB) roundRobinBalancing(w http.ResponseWriter, req *http.Request) {
+	rr := lb.balancing.GetRoundRobin()
 
 	destAddr := rr.Next()
-	lbs.reverseProxy(destAddr, w, req)
+	lb.reverseProxy(destAddr, w, req)
 }
 
-func (lbs *LBServer) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
-	ih := lbs.balancing.GetIPHash()
+func (lb *LB) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
+	ih := lb.balancing.GetIPHash()
 
 	destAddr := ih.Next(req.RemoteAddr)
-	lbs.reverseProxy(destAddr, w, req)
+	lb.reverseProxy(destAddr, w, req)
 }
 
-// TODO add header for proxy
-func (lbs *LBServer) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Request) {
+func (lb *LB) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Request) {
 	req.Host = destAddr
 
-	lbs.lf.Wait()
+	lb.lf.Wait()
 	resp, err := http.DefaultTransport.RoundTrip(req)
-	lbs.lf.Signal()
-
 	if err != nil {
+		lb.lf.Signal()
 		glg.Println(err)
 		return
 	}
 
+	lb.lf.Signal()
+
 	defer resp.Body.Close()
 
-	for _, cokkie := range resp.Cookies() {
+	for _, cokie := range resp.Cookies() {
 		http.SetCookie(w, cokkie)
 	}
 
-	copyResponseHeader(w, resp)
+	copyHeader(w, resp)
 
 	w.WriteHeader(resp.StatusCode)
 
-	contents := readCloserToByte(resp.Body)
-	w.Write(contents)
+	data := readCloserToByte(resp.Body)
+	w.Write(data)
 }
 
 func readCloserToByte(readCloser io.ReadCloser) []byte {
@@ -65,7 +65,7 @@ func readCloserToByte(readCloser io.ReadCloser) []byte {
 	return buf.Bytes()
 }
 
-func copyResponseHeader(dest http.ResponseWriter, src *http.Response) {
+func copyHeader(dest http.ResponseWriter, src *http.Response) {
 	for key, values := range src.Header {
 		dest.Header().Del(key)
 		for _, value := range values {

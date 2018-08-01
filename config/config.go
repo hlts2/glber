@@ -12,7 +12,7 @@ type Config struct {
 	Balancing string  `yaml:"balancing"`
 }
 
-// Server is address of address
+// Server is address of server
 type Server string
 
 // Servers is slice of Server
