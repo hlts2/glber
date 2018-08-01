@@ -1,7 +1,11 @@
 package server
 
 import (
+	"bytes"
+	"io"
 	"net/http"
+
+	"github.com/kpango/glg"
 )
 
 func (lbs *LBServer) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request) {
@@ -28,5 +32,38 @@ func (lbs *LBServer) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
 	lbs.reverseProxy(destAddr, w, req)
 }
 
+// TODO copy header
+// TODO add header for proxy
 func (lbs *LBServer) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Request) {
+	req.Host = destAddr
+
+	lbs.lf.Wait()
+	resp, err := http.DefaultTransport.RoundTrip(req)
+	lbs.lf.Signal()
+
+	if err != nil {
+		glg.Println(err)
+		return
+	}
+
+	defer resp.Body.Close()
+
+	for _, cokkie := range resp.Cookies() {
+		http.SetCookie(w, cokkie)
+	}
+
+	contents := readCloserToByte(resp.Body)
+	if err != nil {
+		glg.Println(err)
+		return
+	}
+
+	w.WriteHeader(resp.StatusCode)
+	w.Write(contents)
+}
+
+func readCloserToByte(readCloser io.ReadCloser) []byte {
+	buf := new(bytes.Buffer)
+	io.Copy(buf, readCloser)
+	return buf.Bytes()
 }

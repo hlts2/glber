@@ -11,6 +11,7 @@ import (
 	"github.com/hlts2/go-LB/config"
 	iphash "github.com/hlts2/ip-hash"
 	"github.com/hlts2/least-connections"
+	lockfree "github.com/hlts2/lock-free"
 	"github.com/hlts2/round-robin"
 )
 
@@ -21,12 +22,14 @@ var ErrNotBalancingAlgorithm = errors.New("balancing algorithm dose not found")
 type LBServer struct {
 	*http.Server
 	balancing *b.Balancing
+	lf        lockfree.LockFree
 }
 
 // NewLBServer returns LBServer object
 func NewLBServer(addr string) *LBServer {
 	lbs := new(LBServer)
 	lbs.Addr = addr
+	lbs.lf = lockfree.New()
 	return lbs
 }
 
