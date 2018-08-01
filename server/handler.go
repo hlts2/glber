@@ -48,7 +48,7 @@ func (lb *LB) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Req
 	defer resp.Body.Close()
 
 	for _, cokie := range resp.Cookies() {
-		http.SetCookie(w, cokkie)
+		http.SetCookie(w, cokie)
 	}
 
 	copyHeader(w, resp)
