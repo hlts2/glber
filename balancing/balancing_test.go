@@ -15,20 +15,57 @@ var testData = []string{
 	"server-3",
 }
 
+func TestNew(t *testing.T) {
+	lc, err := leastconnections.New(testData)
+	if err != nil {
+		t.Errorf("leastconnections.New is error: %v", err)
+	}
+
+	blc := New(lc)
+	if blc == nil {
+		t.Errorf("New(leastconnections) is nil")
+	}
+
+	rr, err := roundrobin.New(testData)
+	if err != nil {
+		t.Errorf("roundrobin.New is error: %v", err)
+	}
+
+	brr := New(rr)
+	if brr == nil {
+		t.Errorf("New(roundrobin) is nil")
+	}
+
+	ih, err := iphash.New(testData)
+	if err != nil {
+		t.Errorf("iphash.New is error: %v", err)
+	}
+
+	bih := New(ih)
+	if bih == nil {
+		t.Error("New(ip-hash) is nil")
+	}
+
+	bnone := New(nil)
+	if bnone != nil {
+		t.Errorf("New(nil) is wrong. expected: %v, got: %v", nil, bnone)
+	}
+}
+
 func TestGetLeastConnections(t *testing.T) {
-	rc, err := leastconnections.New(testData)
+	lc, err := leastconnections.New(testData)
 	if err != nil {
 		t.Errorf("leastconnections.New is error: %v", err)
 	}
 
 	b := &Balancing{
-		algorithm: rc,
+		algorithm: lc,
 	}
 
 	got := b.GetLeastConnections()
 
-	if !reflect.DeepEqual(rc, got) {
-		t.Errorf("GetLeastConnections is wrong. expected: %v, got: %v", rc, got)
+	if !reflect.DeepEqual(lc, got) {
+		t.Errorf("GetLeastConnections is wrong. expected: %v, got: %v", lc, got)
 	}
 }
 
