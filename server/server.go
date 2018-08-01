@@ -27,10 +27,12 @@ type LB struct {
 
 // NewLB returns LB object
 func NewLB(addr string) *LB {
-	lb := new(LB)
-	lb.Addr = addr
-	lb.lf = lockfree.New()
-	return lb
+	return &LB{
+		Server: &http.Server{
+			Addr: addr,
+		},
+		lf: lockfree.New(),
+	}
 }
 
 // Build builds config for load balancer
