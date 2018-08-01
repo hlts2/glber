@@ -2,6 +2,7 @@ package server
 
 import (
 	"crypto/tls"
+	"net"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -63,11 +64,16 @@ func (lbs *LBServer) Build(conf config.Config) (*LBServer, error) {
 	return lbs, nil
 }
 
-// ListenAndServeTLS runs load balancing server with TLS
-func (lbs *LBServer) ListenAndServeTLS(tlsConfig *tls.Config, certFile, keyFile string) error {
+// ServeTLS runs load balancing server with TLS
+func (lbs *LBServer) ServeTLS(tlsConfig *tls.Config, certFile, keyFile string) error {
+	lsn, err := net.Listen("tcp", lbs.Addr)
+	if err != nil {
+		return err
+	}
+
 	lbs.TLSConfig = tlsConfig
 
-	err := lbs.Server.ListenAndServeTLS(certFile, keyFile)
+	err = lbs.Server.ServeTLS(lsn, certFile, keyFile)
 	if err != nil {
 		return err
 	}
@@ -75,9 +81,14 @@ func (lbs *LBServer) ListenAndServeTLS(tlsConfig *tls.Config, certFile, keyFile 
 	return nil
 }
 
-// ListenAndServe runs load balancing server
-func (lbs *LBServer) ListenAndServe() error {
-	err := lbs.Server.ListenAndServe()
+// Serve runs load balancing server
+func (lbs *LBServer) Serve() error {
+	lsn, err := net.Listen("tcp", lbs.Addr)
+	if err != nil {
+		return err
+	}
+
+	err = lbs.Server.Serve(lsn)
 	if err != nil {
 		return err
 	}
