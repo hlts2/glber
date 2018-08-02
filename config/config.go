@@ -23,7 +23,7 @@ func (ss Servers) ToStringSlice() []string {
 	return []string(ss)
 }
 
-// LoadConfig loads config for loadbalancer
+// LoadConfig loads config of loadbalancer
 func LoadConfig(filename string) (*Config, error) {
 	f, err := os.Open(filename)
 	if err != nil {

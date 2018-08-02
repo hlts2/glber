@@ -35,7 +35,7 @@ func NewLB(addr string) *LB {
 	}
 }
 
-// Build builds config for load balancer
+// Build builds config of load balancer
 func (lb *LB) Build(conf config.Config) (*LB, error) {
 	switch conf.Balancing {
 	case "ip-hash":
