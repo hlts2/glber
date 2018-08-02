@@ -16,6 +16,8 @@ func (lb *LB) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request
 	lc.IncrementConnections(destAddr)
 	lb.reverseProxy(destAddr, w, req)
 	lc.DecrementConnections(destAddr)
+
+	req.Body.Close()
 }
 
 func (lb *LB) roundRobinBalancing(w http.ResponseWriter, req *http.Request) {
@@ -23,6 +25,8 @@ func (lb *LB) roundRobinBalancing(w http.ResponseWriter, req *http.Request) {
 
 	destAddr := rr.Next()
 	lb.reverseProxy(destAddr, w, req)
+
+	req.Body.Close()
 }
 
 func (lb *LB) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
@@ -30,6 +34,8 @@ func (lb *LB) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
 
 	destAddr := ih.Next(req.RemoteAddr)
 	lb.reverseProxy(destAddr, w, req)
+
+	req.Body.Close()
 }
 
 func (lb *LB) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Request) {
@@ -45,8 +51,6 @@ func (lb *LB) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Req
 
 	lb.lf.Signal()
 
-	defer resp.Body.Close()
-
 	for _, cokie := range resp.Cookies() {
 		http.SetCookie(w, cokie)
 	}
@@ -57,6 +61,8 @@ func (lb *LB) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Req
 
 	data := readCloserToByte(resp.Body)
 	w.Write(data)
+
+	resp.Body.Close()
 }
 
 func readCloserToByte(readCloser io.ReadCloser) []byte {
