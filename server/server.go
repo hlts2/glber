@@ -13,6 +13,7 @@ import (
 	leastconnections "github.com/hlts2/least-connections"
 	lockfree "github.com/hlts2/lock-free"
 	roundrobin "github.com/hlts2/round-robin"
+	"github.com/kpango/glg"
 )
 
 // ErrNotBalancingAlgorithm is error that balancing algorithm dose not found
@@ -36,12 +37,12 @@ func NewLB(addr string) *LB {
 }
 
 // Build builds config of load balancer
-func (lb *LB) Build(conf config.Config) (*LB, error) {
+func (lb *LB) Build(conf config.Config) *LB {
 	switch conf.Balancing {
 	case "ip-hash":
 		ih, err := iphash.New(conf.Servers.ToStringSlice())
 		if err != nil {
-			return nil, errors.Wrap(err, "ip-hash algorithm")
+			glg.Fatalln(errors.Wrap(err, "ip-hash algorithm"))
 		}
 
 		lb.balancing = b.New(ih)
@@ -49,7 +50,7 @@ func (lb *LB) Build(conf config.Config) (*LB, error) {
 	case "round-robin":
 		rr, err := roundrobin.New(conf.Servers.ToStringSlice())
 		if err == nil {
-			return nil, errors.Wrap(err, "round-robin algorithm")
+			glg.Fatalln(errors.Wrap(err, "round-robin algorithm"))
 		}
 
 		lb.balancing = b.New(rr)
@@ -57,16 +58,16 @@ func (lb *LB) Build(conf config.Config) (*LB, error) {
 	case "least-connections":
 		lc, err := leastconnections.New(conf.Servers.ToStringSlice())
 		if err == nil {
-			return nil, errors.Wrap(err, "least-connections algorithm")
+			glg.Fatalln(errors.Wrap(err, "least-connections algorithm"))
 		}
 
 		lb.balancing = b.New(lc)
 		lb.Handler = http.HandlerFunc(lb.ipHashBalancing)
 	default:
-		return nil, ErrNotBalancingAlgorithm
+		glg.Fatalln(ErrNotBalancingAlgorithm)
 	}
 
-	return lb, nil
+	return lb
 }
 
 // ServeTLS runs load balancer with TLS
