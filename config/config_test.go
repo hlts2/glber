@@ -104,6 +104,46 @@ func TestGetAddress(t *testing.T) {
 	}
 }
 
+func TestGetHostWithPort(t *testing.T) {
+	tests := []struct {
+		servers  Servers
+		expected []string
+	}{
+		{
+			servers: Servers{
+				{
+					Scheme: "http",
+					Host:   "192.168.33.10",
+					Port:   "1111",
+				},
+				{
+					Scheme: "http",
+					Host:   "192.168.33.10",
+					Port:   "2222",
+				},
+				{
+					Scheme: "https",
+					Host:   "192.168.33.10",
+					Port:   "3333",
+				},
+			},
+			expected: []string{
+				"192.168.33.10:1111",
+				"192.168.33.10:2222",
+				"192.168.33.10:3333",
+			},
+		},
+	}
+
+	for i, test := range tests {
+		got := test.servers.GetHostWithPort()
+
+		if !reflect.DeepEqual(test.expected, got) {
+			t.Errorf("tests[%d] - GetHostWithPort is wrong. expected: %v, got: %v", i, test.expected, got)
+		}
+	}
+}
+
 func TestExistsDuplicateHost(t *testing.T) {
 	tests := []struct {
 		hosts    []string
