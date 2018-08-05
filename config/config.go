@@ -6,7 +6,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// Config represents config file for loadbalancer
+// Config represents config file for load balancer
 type Config struct {
 	Servers   Servers `yaml:"servers"`
 	Balancing string  `yaml:"balancing"`
