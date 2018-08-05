@@ -96,7 +96,7 @@ func TestToStringSlice(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		got := test.servers.ToStringSlice()
+		got := test.servers.GetAddresses()
 
 		if !reflect.DeepEqual(test.expected, got) {
 			t.Errorf("tests[%d] - ToStringSlice is wrong. expected: %v, got: %v", i, test.expected, got)

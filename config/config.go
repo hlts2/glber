@@ -6,7 +6,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// Config represents config file for load balancer
+// Config represents config file of load balancer
 type Config struct {
 	Servers   Servers `yaml:"servers"`
 	Balancing string  `yaml:"balancing"`
@@ -22,8 +22,8 @@ type Server struct {
 // Servers is slice of Server
 type Servers []Server
 
-// ToStringSlice converts Servers to []string type
-func (ss Servers) ToStringSlice() []string {
+// GetAddresses returns address of servers
+func (ss Servers) GetAddresses() []string {
 	hosts := make([]string, 0, len(ss))
 
 	for _, s := range ss {

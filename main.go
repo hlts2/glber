@@ -10,13 +10,13 @@ import (
 
 var (
 	configFileN string
-	addr        string
+	host        string
 	port        string
 )
 
 func init() {
 	flag.StringVar(&configFileN, "s", "config.yaml", "set a config file of load balancer")
-	flag.StringVar(&addr, "a", "0.0.0.0", "set a host address of load balancer")
+	flag.StringVar(&host, "a", "127.0.0.1", "set a host name or IP address of load balancer")
 	flag.StringVar(&port, "p", "8080", "set a port number of load balancer")
 	flag.Parse()
 }
@@ -29,7 +29,7 @@ func main() {
 		glg.Fatalln(err)
 	}
 
-	lb := server.NewLB(addr + ":" + port)
+	lb := server.NewLB(host + ":" + port)
 
 	err = lb.Build(conf).Serve()
 	if err != nil {

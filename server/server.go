@@ -16,8 +16,8 @@ import (
 	"github.com/kpango/glg"
 )
 
-// ErrNotBalancingAlgorithm is error that balancing algorithm dose not found
-var ErrNotBalancingAlgorithm = errors.New("balancing algorithm dose not found")
+// ErrInvalidBalancingAlgorithm is error of invalid balancing algorithm
+var ErrInvalidBalancingAlgorithm = errors.New("invalid balancing algorithm")
 
 // LB represents load balancer
 type LB struct {
@@ -40,7 +40,7 @@ func NewLB(addr string) *LB {
 func (lb *LB) Build(conf config.Config) *LB {
 	switch conf.Balancing {
 	case "ip-hash":
-		ih, err := iphash.New(conf.Servers.ToStringSlice())
+		ih, err := iphash.New(conf.Servers.GetAddresses())
 		if err != nil {
 			glg.Fatalln(errors.Wrap(err, "ip-hash algorithm"))
 		}
@@ -48,7 +48,7 @@ func (lb *LB) Build(conf config.Config) *LB {
 		lb.balancing = b.New(ih)
 		lb.Handler = http.HandlerFunc(lb.ipHashBalancing)
 	case "round-robin":
-		rr, err := roundrobin.New(conf.Servers.ToStringSlice())
+		rr, err := roundrobin.New(conf.Servers.GetAddresses())
 		if err != nil {
 			glg.Fatalln(errors.Wrap(err, "round-robin algorithm"))
 		}
@@ -56,7 +56,7 @@ func (lb *LB) Build(conf config.Config) *LB {
 		lb.balancing = b.New(rr)
 		lb.Handler = http.HandlerFunc(lb.roundRobinBalancing)
 	case "least-connections":
-		lc, err := leastconnections.New(conf.Servers.ToStringSlice())
+		lc, err := leastconnections.New(conf.Servers.GetAddresses())
 		if err == nil {
 			glg.Fatalln(errors.Wrap(err, "least-connections algorithm"))
 		}
@@ -64,7 +64,7 @@ func (lb *LB) Build(conf config.Config) *LB {
 		lb.balancing = b.New(lc)
 		lb.Handler = http.HandlerFunc(lb.ipHashBalancing)
 	default:
-		glg.Fatalln(ErrNotBalancingAlgorithm)
+		glg.Fatalln(errors.Wrap(ErrInvalidBalancingAlgorithm, conf.Balancing))
 	}
 
 	return lb
