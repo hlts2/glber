@@ -74,6 +74,8 @@ func readCloserToByte(readCloser io.ReadCloser) []byte {
 	return buf.Bytes()
 }
 
+// getSchemeAndHostWithPort returns the scheme name and host name with port
+// i.e) http://192.168.33.10:1111 => http, 192.168.33.10:1111
 func getSchemeAndHostWithPort(addr string) (string, string) {
 	if addr[:5] == "https" {
 		return addr[:5], addr[8:]
