@@ -64,7 +64,7 @@ func TestLoadConfig(t *testing.T) {
 	}
 }
 
-func TestToStringSlice(t *testing.T) {
+func TestGetAddress(t *testing.T) {
 	tests := []struct {
 		servers  Servers
 		expected []string
@@ -96,7 +96,7 @@ func TestToStringSlice(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		got := test.servers.GetAddresses()
+		got := test.servers.GetAddress()
 
 		if !reflect.DeepEqual(test.expected, got) {
 			t.Errorf("tests[%d] - ToStringSlice is wrong. expected: %v, got: %v", i, test.expected, got)

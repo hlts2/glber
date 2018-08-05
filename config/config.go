@@ -26,8 +26,8 @@ type Server struct {
 // Servers is slice of Server
 type Servers []Server
 
-// GetAddresses returns address of servers
-func (ss Servers) GetAddresses() []string {
+// GetAddress returns address of servers
+func (ss Servers) GetAddress() []string {
 	hosts := make([]string, 0, len(ss))
 
 	for _, s := range ss {
