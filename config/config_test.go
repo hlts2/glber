@@ -11,15 +11,18 @@ var testYaml = `
 servers:
   -
     scheme: http
-    host: 192.168.33.10:1111
+    host: 192.168.33.10
+    port: 1111
 
   -
     scheme: http
-    host: 192.168.33.10:2222
+    host: 192.168.33.10
+    port: 2222
 
   -
     scheme: http
-    host: 192.168.33.10:3333
+    host: 192.168.33.10
+    port: 3333
 
 balancing: ip-hash
 `
@@ -38,15 +41,18 @@ func TestLoadConfig(t *testing.T) {
 		Servers: Servers{
 			{
 				Scheme: "http",
-				Host:   "192.168.33.10:1111",
+				Host:   "192.168.33.10",
+				Port:   "1111",
 			},
 			{
 				Scheme: "http",
-				Host:   "192.168.33.10:2222",
+				Host:   "192.168.33.10",
+				Port:   "2222",
 			},
 			{
 				Scheme: "http",
-				Host:   "192.168.33.10:3333",
+				Host:   "192.168.33.10",
+				Port:   "3333",
 			},
 		},
 		Balancing: "ip-hash",
@@ -66,21 +72,24 @@ func TestToStringSlice(t *testing.T) {
 			servers: Servers{
 				{
 					Scheme: "http",
-					Host:   "192.168.33.10:1111",
+					Host:   "192.168.33.10",
+					Port:   "1111",
 				},
 				{
 					Scheme: "http",
-					Host:   "192.168.33.10:2222",
+					Host:   "192.168.33.10",
+					Port:   "2222",
 				},
 				{
-					Scheme: "http",
-					Host:   "192.168.33.10:3333",
+					Scheme: "https",
+					Host:   "192.168.33.10",
+					Port:   "3333",
 				},
 			},
 			expected: []string{
-				"192.168.33.10:1111",
-				"192.168.33.10:2222",
-				"192.168.33.10:3333",
+				"http://192.168.33.10:1111",
+				"http://192.168.33.10:2222",
+				"https://192.168.33.10:3333",
 			},
 		},
 	}

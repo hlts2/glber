@@ -16,6 +16,7 @@ type Config struct {
 type Server struct {
 	Scheme string `yaml:"scheme"`
 	Host   string `yaml:"host"`
+	Port   string `yaml:"port"`
 }
 
 // Servers is slice of Server
@@ -26,7 +27,7 @@ func (ss Servers) ToStringSlice() []string {
 	hosts := make([]string, 0, len(ss))
 
 	for _, s := range ss {
-		hosts = append(hosts, s.Host)
+		hosts = append(hosts, s.Scheme+"://"+s.Host+":"+s.Port)
 	}
 	return hosts
 }

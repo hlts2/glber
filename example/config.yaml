@@ -1,14 +1,17 @@
 servers:
   -
     scheme: http
-    host: 192.168.33.10:1111
+    host: 192.168.33.10
+    port: 1111
 
   -
     scheme: http
-    host: 192.168.33.10:2222
+    host: 192.168.33.10
+    port: 2222
 
   -
     scheme: http
-    host: 192.168.33.10:3333
+    host: 192.168.33.10
+    port: 3333
 
 balancing: ip-hash

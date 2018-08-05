@@ -11,11 +11,12 @@ import (
 func (lb *LB) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request) {
 	lc := lb.balancing.GetLeastConnections()
 
-	destAddr := lc.Next()
+	dest := lc.Next()
+	scheme, host := getSchemeAndHost(dest)
 
-	lc.IncrementConnections(destAddr)
-	lb.reverseProxy(destAddr, w, req)
-	lc.DecrementConnections(destAddr)
+	lc.IncrementConnections(dest)
+	lb.reverseProxy(scheme, host, w, req)
+	lc.DecrementConnections(dest)
 
 	req.Body.Close()
 }
@@ -23,8 +24,8 @@ func (lb *LB) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request
 func (lb *LB) roundRobinBalancing(w http.ResponseWriter, req *http.Request) {
 	rr := lb.balancing.GetRoundRobin()
 
-	destAddr := rr.Next()
-	lb.reverseProxy(destAddr, w, req)
+	scheme, host := getSchemeAndHost(rr.Next())
+	lb.reverseProxy(scheme, host, w, req)
 
 	req.Body.Close()
 }
@@ -32,14 +33,15 @@ func (lb *LB) roundRobinBalancing(w http.ResponseWriter, req *http.Request) {
 func (lb *LB) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
 	ih := lb.balancing.GetIPHash()
 
-	destAddr := ih.Next(req.RemoteAddr)
-	lb.reverseProxy(destAddr, w, req)
+	scheme, host := getSchemeAndHost(ih.Next(req.RemoteAddr))
+	lb.reverseProxy(scheme, host, w, req)
 
 	req.Body.Close()
 }
 
-func (lb *LB) reverseProxy(destAddr string, w http.ResponseWriter, req *http.Request) {
-	req.Host = destAddr
+func (lb *LB) reverseProxy(scheme, destHost string, w http.ResponseWriter, req *http.Request) {
+	req.URL.Scheme = scheme
+	req.URL.Host = destHost
 
 	lb.lf.Wait()
 	resp, err := http.DefaultTransport.RoundTrip(req)
@@ -69,6 +71,16 @@ func readCloserToByte(readCloser io.ReadCloser) []byte {
 	buf := new(bytes.Buffer)
 	io.Copy(buf, readCloser)
 	return buf.Bytes()
+}
+
+func getSchemeAndHost(url string) (string, string) {
+	if url[:5] == "https" {
+		return url[:5], url[8:]
+	} else if url[:4] == "http" {
+		return url[:4], url[7:]
+	} else {
+		return "", ""
+	}
 }
 
 func copyHeader(dest http.ResponseWriter, src *http.Response) {
