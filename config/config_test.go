@@ -104,6 +104,40 @@ func TestToStringSlice(t *testing.T) {
 	}
 }
 
+func TestExistsDuplicateHost(t *testing.T) {
+	tests := []struct {
+		hosts    []string
+		expected bool
+	}{
+		{
+			hosts: []string{
+				"192.168.33.10:1111",
+				"192.168.33.10:2222",
+			},
+			expected: false,
+		},
+		{
+			hosts: []string{
+				"192.168.33.10:2222",
+				"192.168.33.10:2222",
+			},
+			expected: true,
+		},
+		{
+			hosts:    []string{},
+			expected: false,
+		},
+	}
+
+	for i, test := range tests {
+		got := existsDuplicateHost(test.hosts)
+
+		if test.expected != got {
+			t.Errorf("tests[%d] - existsDuplicateHost is wrong. expected: %v, got: %v", i, test.expected, got)
+		}
+	}
+}
+
 func createFile(filename string, data []byte) {
 	ioutil.WriteFile(filename, data, os.ModePerm)
 }
