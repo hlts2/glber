@@ -49,7 +49,7 @@ func (lb *LB) Build(conf config.Config) *LB {
 		lb.Handler = http.HandlerFunc(lb.ipHashBalancing)
 	case "round-robin":
 		rr, err := roundrobin.New(conf.Servers.ToStringSlice())
-		if err == nil {
+		if err != nil {
 			glg.Fatalln(errors.Wrap(err, "round-robin algorithm"))
 		}
 
