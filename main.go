@@ -17,7 +17,7 @@ var (
 func init() {
 	flag.StringVar(&configFileN, "s", "config.yaml", "set a config file of load balancer")
 	flag.StringVar(&addr, "a", "0.0.0.0", "set a host address of load balancer")
-	flag.StringVar(&port, "p", "80", "set a port number of load balancer")
+	flag.StringVar(&port, "p", "8080", "set a port number of load balancer")
 	flag.Parse()
 }
 

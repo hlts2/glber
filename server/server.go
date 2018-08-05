@@ -79,6 +79,7 @@ func (lb *LB) ServeTLS(tlsConfig *tls.Config, certFile, keyFile string) error {
 
 	lb.TLSConfig = tlsConfig
 
+	glg.Success("Load Balancer starting on " + lb.Addr)
 	err = lb.Server.ServeTLS(lisner, certFile, keyFile)
 	if err != nil {
 		return err
@@ -94,6 +95,7 @@ func (lb *LB) Serve() error {
 		return err
 	}
 
+	glg.Success("Load Balancer starting on " + lb.Addr)
 	err = lb.Server.Serve(lisner)
 	if err != nil {
 		return err
