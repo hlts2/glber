@@ -12,15 +12,23 @@ type Config struct {
 	Balancing string  `yaml:"balancing"`
 }
 
-// Server is address of server
-type Server string
+// Server represents the server to connect to
+type Server struct {
+	Scheme string `yaml:"scheme"`
+	Host   string `yaml:"host"`
+}
 
 // Servers is slice of Server
-type Servers []string
+type Servers []Server
 
 // ToStringSlice converts Servers to []string type
 func (ss Servers) ToStringSlice() []string {
-	return []string(ss)
+	hosts := make([]string, 0, len(ss))
+
+	for _, s := range ss {
+		hosts = append(hosts, s.Host)
+	}
+	return hosts
 }
 
 // LoadConfig loads config of loadbalancer
