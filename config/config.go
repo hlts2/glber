@@ -32,18 +32,17 @@ func (ss Servers) ToStringSlice() []string {
 	return hosts
 }
 
-// LoadConfig loads config of loadbalancer
-func LoadConfig(filename string) (*Config, error) {
+// LoadConfig loads config of load balancer
+func LoadConfig(filename string, conf *Config) error {
 	f, err := os.Open(filename)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	var c Config
-	err = yaml.NewDecoder(f).Decode(&c)
+	err = yaml.NewDecoder(f).Decode(conf)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &c, nil
+	return nil
 }

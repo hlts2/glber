@@ -22,14 +22,16 @@ func init() {
 }
 
 func main() {
-	conf, err := config.LoadConfig(configFileN)
+	var conf config.Config
+
+	err := config.LoadConfig(configFileN, &conf)
 	if err != nil {
 		glg.Fatalln(err)
 	}
 
 	lb := server.NewLB(addr + ":" + port)
 
-	err = lb.Build(*conf).Serve()
+	err = lb.Build(conf).Serve()
 	if err != nil {
 		glg.Fatalln(err)
 	}

@@ -32,12 +32,13 @@ func TestLoadConfig(t *testing.T) {
 	defer deleteFile(filename)
 	createFile(filename, []byte(testYaml))
 
-	c, err := LoadConfig(filename)
+	var c Config
+	err := LoadConfig(filename, &c)
 	if err != nil {
 		t.Errorf("LoadConfig is faild. error: %v, c: %v", err, c)
 	}
 
-	expected := &Config{
+	expected := Config{
 		Servers: Servers{
 			{
 				Scheme: "http",
