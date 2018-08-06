@@ -11,11 +11,11 @@ import (
 
 const (
 
-	// TSLCertFile is cert file name of TSL
-	TSLCertFile = "cert.pen"
+	// TLSCertFile is cert file name for TLS
+	TLSCertFile = "cert.pem"
 
-	// TSLKeyFile is key file name of TSL
-	TSLKeyFile = "key.pen"
+	// TLSKeyFile is key file name for TLS
+	TLSKeyFile = "key.pem"
 )
 
 // ServeCommand is the command that serve load balancer
@@ -66,8 +66,8 @@ func ServeCommand() cli.Command {
 			}
 
 			var (
-				certname = filepath.Join(tlspath, TSLCertFile)
-				keyname  = filepath.Join(tlspath, TSLKeyFile)
+				certname = filepath.Join(tlspath, TLSCertFile)
+				keyname  = filepath.Join(tlspath, TLSKeyFile)
 			)
 
 			cert, err := tls.LoadX509KeyPair(certname, keyname)
