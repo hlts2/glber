@@ -37,7 +37,7 @@ func (ss Servers) GetAddress() []string {
 }
 
 // GetHostWithPort returns host of servers
-// i.e) 192.168.33.10:1111
+// i.e) []string{"192.168.33.10:1111", "192.168.33.10:2222"}
 func (ss Servers) GetHostWithPort() []string {
 	hosts := make([]string, 0, len(ss))
 
