@@ -66,11 +66,11 @@ func ServeCommand() cli.Command {
 			}
 
 			var (
-				certname = filepath.Join(tlspath, TLSCertFile)
-				keyname  = filepath.Join(tlspath, TLSKeyFile)
+				certpath = filepath.Join(tlspath, TLSCertFile)
+				keypath  = filepath.Join(tlspath, TLSKeyFile)
 			)
 
-			cert, err := tls.LoadX509KeyPair(certname, keyname)
+			cert, err := tls.LoadX509KeyPair(certpath, keypath)
 			if err != nil {
 				return err
 			}
@@ -81,7 +81,7 @@ func ServeCommand() cli.Command {
 				},
 			}
 
-			err = lb.ServeTLS(&tlsConfig, certname, keyname)
+			err = lb.ServeTLS(&tlsConfig, certpath, keypath)
 			if err != nil {
 				return err
 			}
