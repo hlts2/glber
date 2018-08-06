@@ -8,7 +8,7 @@ import (
 )
 
 // ErrDuplicateHost is error that there is duplicte host
-var ErrDuplicateHost = errors.New("duplicate host")
+var ErrDuplicateHost = errors.New("duplicate host in yaml file")
 
 // Config represents config file of load balancer
 type Config struct {
