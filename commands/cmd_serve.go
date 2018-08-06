@@ -9,6 +9,15 @@ import (
 	"github.com/urfave/cli"
 )
 
+const (
+
+	// TSLCertFile is cert file name of TSL
+	TSLCertFile = "cert.pen"
+
+	// TSLKeyFile is key file name of TSL
+	TSLKeyFile = "key.pen"
+)
+
 // ServeCommand is the command that serve load balancer
 func ServeCommand() cli.Command {
 	return cli.Command{
@@ -57,8 +66,8 @@ func ServeCommand() cli.Command {
 			}
 
 			var (
-				certname = filepath.Join(tlspath, "cert.pem")
-				keyname  = filepath.Join(tlspath, "key.pem")
+				certname = filepath.Join(tlspath, TSLCertFile)
+				keyname  = filepath.Join(tlspath, TSLKeyFile)
 			)
 
 			cert, err := tls.LoadX509KeyPair(certname, keyname)
