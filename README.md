@@ -1,5 +1,7 @@
 # go-LB
 
+[![Join the chat at https://gitter.im/hlts2/go-LB](https://badges.gitter.im/hlts2/go-LB.svg)](https://gitter.im/hlts2/go-LB?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 go-LB is a simple lightweight load balancer written in golang.
 
 ## Requirement
