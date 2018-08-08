@@ -1,11 +1,7 @@
 package server
 
 import (
-	"bytes"
-	"io"
 	"net/http"
-
-	"github.com/kpango/glg"
 )
 
 func (lb *LB) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request) {
@@ -40,40 +36,6 @@ func (lb *LB) ipHashBalancing(w http.ResponseWriter, req *http.Request) {
 	req.Body.Close()
 }
 
-func (lb *LB) reverseProxy(scheme, destHost string, w http.ResponseWriter, req *http.Request) {
-	req.URL.Scheme = scheme
-	req.URL.Host = destHost
-
-	lb.lf.Wait()
-	resp, err := http.DefaultTransport.RoundTrip(req)
-	if err != nil {
-		lb.lf.Signal()
-		glg.Println(err)
-		return
-	}
-
-	lb.lf.Signal()
-
-	for _, cokie := range resp.Cookies() {
-		http.SetCookie(w, cokie)
-	}
-
-	copyHeader(w, resp)
-
-	w.WriteHeader(resp.StatusCode)
-
-	data := readCloserToByte(resp.Body)
-	w.Write(data)
-
-	resp.Body.Close()
-}
-
-func readCloserToByte(readCloser io.ReadCloser) []byte {
-	buf := new(bytes.Buffer)
-	io.Copy(buf, readCloser)
-	return buf.Bytes()
-}
-
 // getSchemeAndHostWithPort returns the scheme name and host name with port
 // i.e) http://192.168.33.10:1111 => http, 192.168.33.10:1111
 func getSchemeAndHostWithPort(addr string) (string, string) {
@@ -83,14 +45,5 @@ func getSchemeAndHostWithPort(addr string) (string, string) {
 		return addr[:4], addr[7:]
 	} else {
 		return "", ""
-	}
-}
-
-func copyHeader(dest http.ResponseWriter, src *http.Response) {
-	for key, values := range src.Header {
-		dest.Header().Del(key)
-		for _, value := range values {
-			dest.Header().Add(key, value)
-		}
 	}
 }
