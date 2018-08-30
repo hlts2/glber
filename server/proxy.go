@@ -22,10 +22,6 @@ func (lb *LB) reverseProxy(scheme, destHost string, w http.ResponseWriter, req *
 
 	lb.lf.Signal()
 
-	for _, cokie := range resp.Cookies() {
-		http.SetCookie(w, cokie)
-	}
-
 	copyHeader(w, resp)
 
 	w.WriteHeader(resp.StatusCode)
