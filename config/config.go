@@ -1,8 +1,9 @@
 package config
 
 import (
-	"errors"
 	"os"
+
+	"github.com/pkg/errors"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -52,12 +53,12 @@ func (ss Servers) GetHostWithPort() []string {
 func LoadConfig(filename string, conf *Config) error {
 	f, err := os.Open(filename)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "faild to open configuration file")
 	}
 
 	err = yaml.NewDecoder(f).Decode(conf)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "faild to decode")
 	}
 
 	ok := existsDuplicateHost(conf.Servers.GetHostWithPort())

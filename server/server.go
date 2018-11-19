@@ -74,7 +74,7 @@ func (lb *LB) Build(conf config.Config) *LB {
 func (lb *LB) ServeTLS(tlsConfig *tls.Config, certFile, keyFile string) error {
 	lisner, err := net.Listen("tcp", lb.Addr)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "faild to listen")
 	}
 
 	lb.TLSConfig = tlsConfig
@@ -82,7 +82,7 @@ func (lb *LB) ServeTLS(tlsConfig *tls.Config, certFile, keyFile string) error {
 	glg.Success("Load Balancer starting on " + lb.Addr)
 	err = lb.Server.ServeTLS(lisner, certFile, keyFile)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "faild to serve with tls")
 	}
 
 	return nil
@@ -92,13 +92,13 @@ func (lb *LB) ServeTLS(tlsConfig *tls.Config, certFile, keyFile string) error {
 func (lb *LB) Serve() error {
 	lisner, err := net.Listen("tcp", lb.Addr)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "faild to listen")
 	}
 
 	glg.Success("Load Balancer starting on " + lb.Addr)
 	err = lb.Server.Serve(lisner)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "faild to serve")
 	}
 
 	return nil

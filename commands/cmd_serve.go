@@ -6,6 +6,7 @@ import (
 
 	"github.com/hlts2/go-LB/config"
 	"github.com/hlts2/go-LB/server"
+	"github.com/pkg/errors"
 	"github.com/urfave/cli"
 )
 
@@ -49,7 +50,7 @@ func ServeCommand() cli.Command {
 			var conf config.Config
 			err := config.LoadConfig(c.String("set"), &conf)
 			if err != nil {
-				return err
+				return errors.Wrap(err, "faild to load configuration file")
 			}
 
 			lb := server.NewLB(c.String("host") + ":" + c.String("port")).Build(conf)
@@ -60,7 +61,7 @@ func ServeCommand() cli.Command {
 			if tlspath == "" {
 				err := lb.Serve()
 				if err != nil {
-					return err
+					return errors.Wrap(err, "faild to lb.serve")
 				}
 				return nil
 			}
@@ -72,7 +73,7 @@ func ServeCommand() cli.Command {
 
 			cert, err := tls.LoadX509KeyPair(certpath, keypath)
 			if err != nil {
-				return err
+				return errors.Wrap(err, "faild to load x509keypair")
 			}
 
 			tlsConfig := tls.Config{
@@ -83,7 +84,7 @@ func ServeCommand() cli.Command {
 
 			err = lb.ServeTLS(&tlsConfig, certpath, keypath)
 			if err != nil {
-				return err
+				return errors.Wrap(err, "faild to lb.servetls")
 			}
 
 			return nil
