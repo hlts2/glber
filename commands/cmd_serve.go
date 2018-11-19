@@ -12,10 +12,10 @@ import (
 
 const (
 
-	// TLSCertFile is cert file name for TLS
+	// TLSCertFile is cert file for TLS
 	TLSCertFile = "cert.pem"
 
-	// TLSKeyFile is key file name for TLS
+	// TLSKeyFile is key file for TLS
 	TLSKeyFile = "key.pem"
 )
 
