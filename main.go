@@ -5,6 +5,7 @@ import (
 
 	"github.com/hlts2/go-LB/commands"
 	"github.com/kpango/glg"
+	"github.com/pkg/errors"
 	"github.com/urfave/cli"
 )
 
@@ -19,6 +20,6 @@ func main() {
 
 	err := app.Run(os.Args)
 	if err != nil {
-		glg.Fatalln(err)
+		glg.Fatalln(errors.Wrap(err, "exit app because an error occurred"))
 	}
 }
