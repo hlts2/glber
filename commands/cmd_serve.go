@@ -61,7 +61,7 @@ func ServeCommand() cli.Command {
 			if tlspath == "" {
 				err := lb.Serve()
 				if err != nil {
-					return errors.Wrap(err, "faild to lb.serve")
+					return errors.Wrap(err, "faild to run server")
 				}
 				return nil
 			}
@@ -73,7 +73,7 @@ func ServeCommand() cli.Command {
 
 			cert, err := tls.LoadX509KeyPair(certpath, keypath)
 			if err != nil {
-				return errors.Wrap(err, "faild to load x509keypair")
+				return errors.Wrap(err, "faild to load certification file and key file")
 			}
 
 			tlsConfig := tls.Config{
@@ -84,7 +84,7 @@ func ServeCommand() cli.Command {
 
 			err = lb.ServeTLS(&tlsConfig, certpath, keypath)
 			if err != nil {
-				return errors.Wrap(err, "faild to lb.servetls")
+				return errors.Wrap(err, "faild to run tls server")
 			}
 
 			return nil
