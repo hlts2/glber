@@ -12,15 +12,15 @@ import (
 
 const (
 
-	// TLSCertFile is cert file for TLS
-	TLSCertFile = "cert.pem"
+	// TLSCertFileName is cert file name for TLS
+	TLSCertFileName = "cert.pem"
 
-	// TLSKeyFile is key file for TLS
-	TLSKeyFile = "key.pem"
+	// TLSKeyFileName is key file name for TLS
+	TLSKeyFileName = "key.pem"
 )
 
-// ServeCommand is the command that serve load balancer
-func ServeCommand() cli.Command {
+// Serve is the command that serve load balancer
+func Serve() cli.Command {
 	return cli.Command{
 		Name:  "serve",
 		Usage: "serve load balancer",
@@ -28,32 +28,32 @@ func ServeCommand() cli.Command {
 			cli.StringFlag{
 				Name:  "set, s",
 				Value: "config.yml",
-				Usage: "set a config file of load balancer",
+				Usage: "set the configuration file",
 			},
 			cli.StringFlag{
 				Name:  "host, H",
 				Value: "127.0.0.1",
-				Usage: "set a host name or IP of load balancer",
+				Usage: "set the host name or IP",
 			},
 			cli.StringFlag{
 				Name:  "port, p",
 				Value: "8080",
-				Usage: "set a port number of load balancer",
+				Usage: "set the port number",
 			},
 			cli.StringFlag{
 				Name:  "tlspath",
 				Value: "",
-				Usage: "set a TLS directory of load balancer",
+				Usage: "set the TLS directory",
 			},
 		},
 		Action: func(c *cli.Context) error {
-			var conf config.Config
-			err := config.LoadConfig(c.String("set"), &conf)
+			var cfg config.Config
+			err := config.LoadConfig(c.String("set"), &cfg)
 			if err != nil {
 				return errors.Wrap(err, "faild to load configuration file")
 			}
 
-			lb := server.NewLB(c.String("host") + ":" + c.String("port")).Build(conf)
+			lb := server.NewLB(c.String("host") + ":" + c.String("port")).Build(cfg)
 
 			tlspath := c.String("tlspath")
 
@@ -67,8 +67,8 @@ func ServeCommand() cli.Command {
 			}
 
 			var (
-				certpath = filepath.Join(tlspath, TLSCertFile)
-				keypath  = filepath.Join(tlspath, TLSKeyFile)
+				certpath = filepath.Join(tlspath, TLSCertFileName)
+				keypath  = filepath.Join(tlspath, TLSKeyFileName)
 			)
 
 			cert, err := tls.LoadX509KeyPair(certpath, keypath)

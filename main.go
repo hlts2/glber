@@ -16,11 +16,11 @@ func main() {
 	app.Usage = "Load Balancer"
 	app.Version = "v0.0.1"
 	app.Commands = cli.Commands{
-		cmd.ServeCommand(),
+		cmd.Serve(),
 	}
 
 	err := app.Run(os.Args)
 	if err != nil {
-		glg.Fatalln(errors.Wrap(err, "exit app because an error occurred"))
+		glg.Fatal(errors.Wrap(err, "exit app because an error occurred"))
 	}
 }
