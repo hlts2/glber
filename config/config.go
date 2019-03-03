@@ -68,15 +68,6 @@ func duplicateExists(vs []string) bool {
 	return false
 }
 
-func (ss Servers) getHostAndPorts() []string {
-	addresses := make([]string, len(ss))
-
-	for i, s := range ss {
-		addresses[i] = s.address()
-	}
-	return addresses
-}
-
 // GetAddresses returns address of servers
 func (ss Servers) GetAddresses() []string {
 	addresses := make([]string, len(ss))
