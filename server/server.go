@@ -40,7 +40,7 @@ func NewLB(addr string) *LB {
 func (lb *LB) Build(conf config.Config) *LB {
 	switch conf.Balancing {
 	case "ip-hash":
-		ih, err := iphash.New(conf.Servers.GetAddress())
+		ih, err := iphash.New(conf.Servers.GetAddresses())
 		if err != nil {
 			glg.Fatalln(errors.Wrap(err, "faild to load ip-hash algorithm"))
 		}
@@ -48,7 +48,7 @@ func (lb *LB) Build(conf config.Config) *LB {
 		lb.balancing = b.New(ih)
 		lb.Handler = http.HandlerFunc(lb.ipHashBalancing)
 	case "round-robin":
-		rr, err := roundrobin.New(conf.Servers.GetAddress())
+		rr, err := roundrobin.New(conf.Servers.GetAddresses())
 		if err != nil {
 			glg.Fatalln(errors.Wrap(err, "faild to load round-robin algorithm"))
 		}
@@ -56,7 +56,7 @@ func (lb *LB) Build(conf config.Config) *LB {
 		lb.balancing = b.New(rr)
 		lb.Handler = http.HandlerFunc(lb.roundRobinBalancing)
 	case "least-connections":
-		lc, err := leastconnections.New(conf.Servers.GetAddress())
+		lc, err := leastconnections.New(conf.Servers.GetAddresses())
 		if err == nil {
 			glg.Fatalln(errors.Wrap(err, "faild to load least-connections algorithm"))
 		}
