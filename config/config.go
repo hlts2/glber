@@ -1,83 +1,99 @@
 package config
 
 import (
+	"net/url"
 	"os"
 
 	"github.com/pkg/errors"
-
 	yaml "gopkg.in/yaml.v2"
 )
 
-// ErrDuplicateHost is error that there is duplicte host
-var ErrDuplicateHost = errors.New("duplicate host in yaml file")
-
-// Config represents config file of load balancer
+// Config represents an application configuration content (config.yaml).
 type Config struct {
-	Servers   Servers `yaml:"servers"`
-	Balancing string  `yaml:"balancing"`
+	Servers   `yaml:"servers"`
+	Balancing string `yaml:"balancing"`
 }
 
-// Server represents the server to connect to
+// Server represents configuration content for server.
 type Server struct {
 	Scheme string `yaml:"scheme"`
 	Host   string `yaml:"host"`
 	Port   string `yaml:"port"`
 }
 
-// Servers is slice of Server
+// Servers is Server slice.
 type Servers []Server
 
-// GetAddress returns address of servers
-func (ss Servers) GetAddress() []string {
-	hosts := make([]string, 0, len(ss))
-
-	for _, s := range ss {
-		hosts = append(hosts, s.Scheme+"://"+s.Host+":"+s.Port)
-	}
-	return hosts
+func (s Server) address() string {
+	return s.Scheme + "://" + s.Host + ":" + s.Port
 }
 
-// GetHostWithPort returns host of servers
-// i.e) []string{"192.168.33.10:1111", "192.168.33.10:2222"}
-func (ss Servers) GetHostWithPort() []string {
-	hosts := make([]string, 0, len(ss))
+func (ss Servers) validate() error {
+	hostports := make([]string, len(ss))
 
-	for _, s := range ss {
-		hosts = append(hosts, s.Host+":"+s.Port)
+	for i, s := range ss {
+		if len(s.Scheme) == 0 || len(s.Host) == 0 || len(s.Port) == 0 {
+			return errors.Errorf("invalid server configuration, scheme: %v, host: %v, port: %v", s.Scheme, s.Host, s.Port)
+		}
+
+		addr := s.address()
+
+		_, err := url.ParseRequestURI(s.address())
+		if err != nil {
+			return errors.Wrapf(err, "invalid address: %s", addr)
+		}
+
+		// http://127.0.0.1:80 => 127.0.0.1:80
+		hostports[i] = addr[len(s.Scheme)+3:]
 	}
 
-	return hosts
-}
-
-// LoadConfig loads config of load balancer
-func LoadConfig(filename string, conf *Config) error {
-	f, err := os.Open(filename)
-	if err != nil {
-		return errors.Wrap(err, "faild to open configuration file")
-	}
-
-	err = yaml.NewDecoder(f).Decode(conf)
-	if err != nil {
-		return errors.Wrap(err, "faild to decode")
-	}
-
-	ok := existsDuplicateHost(conf.Servers.GetHostWithPort())
+	ok := duplicateExists(hostports)
 	if ok {
-		return ErrDuplicateHost
+		return errors.New("duplicate host and port exists")
 	}
 
 	return nil
 }
 
-// existsDuplicateHost returns true if there is duplicte host
-func existsDuplicateHost(hosts []string) bool {
-	m := make(map[string]int, len(hosts))
+// duplicateExists returns true if there is duplicte in to the values.
+func duplicateExists(vs []string) bool {
+	m := make(map[string]bool, len(vs))
 
-	for _, host := range hosts {
-		if _, ok := m[host]; ok {
+	for _, v := range vs {
+		if _, ok := m[v]; ok {
 			return true
 		}
-		m[host] = 0
+		m[v] = true
 	}
 	return false
+}
+
+// GetAddresses returns address of servers
+func (ss Servers) GetAddresses() []string {
+	addrs := make([]string, len(ss))
+
+	for i, s := range ss {
+		addrs[i] = s.address()
+	}
+	return addrs
+}
+
+// Load loads configuration content of the given the path.
+func Load(path string, cfg *Config) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return errors.Wrap(err, "faild to open configuration file")
+	}
+
+	err = yaml.NewDecoder(f).Decode(cfg)
+	if err != nil {
+		return errors.Wrap(err, "faild to decode")
+	}
+
+	err = cfg.Servers.validate()
+	if err != nil {
+		return errors.Wrap(err, "invalid server configuration")
+	}
+
+	return nil
 }
