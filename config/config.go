@@ -70,12 +70,12 @@ func duplicateExists(vs []string) bool {
 
 // GetAddresses returns address of servers
 func (ss Servers) GetAddresses() []string {
-	addresses := make([]string, len(ss))
+	addrs := make([]string, len(ss))
 
 	for i, s := range ss {
-		addresses[i] = s.address()
+		addrs[i] = s.address()
 	}
-	return addresses
+	return addrs
 }
 
 // Load loads configuration content of the given the path.
