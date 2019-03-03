@@ -40,7 +40,7 @@ func (ss Servers) validate() error {
 
 		_, err := url.ParseRequestURI(s.address())
 		if err != nil {
-			return nil
+			return errors.Wrapf(err, "invalid address: %s", addr)
 		}
 
 		hostAndPorts[i] = addr[len(s.Scheme)+3:]
@@ -48,7 +48,7 @@ func (ss Servers) validate() error {
 
 	ok := duplicateHostAndPortExists(hostAndPorts)
 	if ok {
-		return errors.New("exists duplicate address")
+		return errors.New("exists duplicate host")
 	}
 
 	return nil
