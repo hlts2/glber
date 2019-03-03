@@ -106,31 +106,31 @@ func TestGetAddresses(t *testing.T) {
 
 func TestExistsDuplicateHost(t *testing.T) {
 	tests := []struct {
-		addrs []string
+		input []string
 		want  bool
 	}{
 		{
-			addrs: []string{
-				"http://192.168.33.10:1111",
-				"http://192.168.33.10:2222",
+			input: []string{
+				"192.168.33.10:1111",
+				"192.168.33.10:2222",
 			},
 			want: false,
 		},
 		{
-			addrs: []string{
-				"http://192.168.33.10:2222",
-				"http://192.168.33.10:2222",
+			input: []string{
+				"92.168.33.10:2222",
+				"92.168.33.10:2222",
 			},
 			want: true,
 		},
 		{
-			addrs: []string{},
+			input: []string{},
 			want:  false,
 		},
 	}
 
 	for i, test := range tests {
-		got := duplicateAddressExists(test.addrs)
+		got := duplicateHostAndPortExists(test.input)
 
 		if test.want != got {
 			t.Errorf("tests[%d] - existsDuplicateHost is wrong. want: %v, got: %v", i, test.want, got)

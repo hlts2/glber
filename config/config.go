@@ -29,17 +29,51 @@ func (s Server) address() string {
 }
 
 func (ss Servers) validate() error {
-	for _, s := range ss {
+	hostAndPorts := make([]string, len(ss))
+
+	for i, s := range ss {
 		if len(s.Scheme) == 0 || len(s.Host) == 0 || len(s.Port) == 0 {
 			return errors.New("empty scheme or host or port")
 		}
+
+		addr := s.address()
 
 		_, err := url.ParseRequestURI(s.address())
 		if err != nil {
 			return nil
 		}
+
+		hostAndPorts[i] = addr[len(s.Scheme)+3:]
 	}
+
+	ok := duplicateHostAndPortExists(hostAndPorts)
+	if ok {
+		return errors.New("exists duplicate address")
+	}
+
 	return nil
+}
+
+// duplicateHostAndPortExists returns true if there is duplicte host and port.
+func duplicateHostAndPortExists(hosts []string) bool {
+	m := make(map[string]bool, len(hosts))
+
+	for _, host := range hosts {
+		if _, ok := m[host]; ok {
+			return true
+		}
+		m[host] = true
+	}
+	return false
+}
+
+func (ss Servers) getHostAndPorts() []string {
+	addresses := make([]string, len(ss))
+
+	for i, s := range ss {
+		addresses[i] = s.address()
+	}
+	return addresses
 }
 
 // GetAddresses returns address of servers
@@ -69,25 +103,5 @@ func Load(path string, cfg *Config) error {
 		return errors.Wrap(err, "invalid server configuration")
 	}
 
-	addrs := cfg.Servers.GetAddresses()
-
-	ok := duplicateAddressExists(addrs)
-	if ok {
-		return errors.New("duplicate host in yaml file")
-	}
-
 	return nil
-}
-
-// duplicateAddressExists returns true if there is duplicte address.
-func duplicateAddressExists(hosts []string) bool {
-	m := make(map[string]bool, len(hosts))
-
-	for _, host := range hosts {
-		if _, ok := m[host]; ok {
-			return true
-		}
-		m[host] = true
-	}
-	return false
 }
