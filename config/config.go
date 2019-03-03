@@ -49,7 +49,7 @@ func (ss Servers) validate() error {
 
 	ok := duplicateExists(hostports)
 	if ok {
-		return errors.New("exists duplicate host")
+		return errors.Errorf("duplicate host and port exists: %v", hostports)
 	}
 
 	return nil
