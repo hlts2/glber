@@ -49,13 +49,13 @@ func (ss Servers) validate() error {
 
 	ok := duplicateExists(hostports)
 	if ok {
-		return errors.Errorf("duplicate host and port exists: %v", hostports)
+		return errors.New("duplicate host and port exists")
 	}
 
 	return nil
 }
 
-// duplicateExists returns true if there is duplicte.
+// duplicateExists returns true if there is duplicte in to the values.
 func duplicateExists(vs []string) bool {
 	m := make(map[string]bool, len(vs))
 
