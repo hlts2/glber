@@ -96,15 +96,13 @@ func TestGetAddresses(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		got := test.servers.GetAddresses()
-
-		if !reflect.DeepEqual(test.want, got) {
-			t.Errorf("tests[%d] - ToStringSlice is wrong. want: %v, got: %v", i, test.want, got)
+		if want, got := test.want, test.servers.GetAddresses(); !reflect.DeepEqual(want, got) {
+			t.Errorf("tests[%d] - servers.GetAddresses is wrong. want: %v, got: %v", i, want, got)
 		}
 	}
 }
 
-func TestExistsDuplicateHost(t *testing.T) {
+func TestDuplicateExists(t *testing.T) {
 	tests := []struct {
 		input []string
 		want  bool
@@ -130,10 +128,8 @@ func TestExistsDuplicateHost(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		got := duplicateExists(test.input)
-
-		if test.want != got {
-			t.Errorf("tests[%d] - existsDuplicateHost is wrong. want: %v, got: %v", i, test.want, got)
+		if want, got := test.want, duplicateExists(test.input); want != got {
+			t.Errorf("tests[%d] - duplicateExists is wrong. want: %v, got: %v", i, want, got)
 		}
 	}
 }
