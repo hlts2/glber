@@ -130,7 +130,7 @@ func TestExistsDuplicateHost(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		got := duplicateHostAndPortExists(test.input)
+		got := duplicateExists(test.input)
 
 		if test.want != got {
 			t.Errorf("tests[%d] - existsDuplicateHost is wrong. want: %v, got: %v", i, test.want, got)

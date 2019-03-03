@@ -29,11 +29,11 @@ func (s Server) address() string {
 }
 
 func (ss Servers) validate() error {
-	hostAndPorts := make([]string, len(ss))
+	hostports := make([]string, len(ss))
 
 	for i, s := range ss {
 		if len(s.Scheme) == 0 || len(s.Host) == 0 || len(s.Port) == 0 {
-			return errors.New("empty scheme or host or port")
+			return errors.Errorf("invalid server configuration, scheme: %v, host: %v, port: %v", s.Scheme, s.Host, s.Port)
 		}
 
 		addr := s.address()
@@ -43,10 +43,11 @@ func (ss Servers) validate() error {
 			return errors.Wrapf(err, "invalid address: %s", addr)
 		}
 
-		hostAndPorts[i] = addr[len(s.Scheme)+3:]
+		// http://127.0.0.1:80 => 127.0.0.1:80
+		hostports[i] = addr[len(s.Scheme)+3:]
 	}
 
-	ok := duplicateHostAndPortExists(hostAndPorts)
+	ok := duplicateExists(hostports)
 	if ok {
 		return errors.New("exists duplicate host")
 	}
@@ -54,15 +55,15 @@ func (ss Servers) validate() error {
 	return nil
 }
 
-// duplicateHostAndPortExists returns true if there is duplicte host and port.
-func duplicateHostAndPortExists(hosts []string) bool {
-	m := make(map[string]bool, len(hosts))
+// duplicateExists returns true if there is duplicte.
+func duplicateExists(vs []string) bool {
+	m := make(map[string]bool, len(vs))
 
-	for _, host := range hosts {
-		if _, ok := m[host]; ok {
+	for _, v := range vs {
+		if _, ok := m[v]; ok {
 			return true
 		}
-		m[host] = true
+		m[v] = true
 	}
 	return false
 }
