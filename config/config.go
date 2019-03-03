@@ -33,7 +33,7 @@ func (ss Servers) validate() error {
 
 	for i, s := range ss {
 		if len(s.Scheme) == 0 || len(s.Host) == 0 || len(s.Port) == 0 {
-			return errors.Errorf("invalid server configuration, scheme: %v, host: %v, port: %v", s.Scheme, s.Host, s.Port)
+			return errors.Errorf("empty scheme: %v or host: %v or port: %v", s.Scheme, s.Host, s.Port)
 		}
 
 		addr := s.String()
