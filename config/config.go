@@ -10,8 +10,8 @@ import (
 
 // Config represents an application configuration content (config.yaml).
 type Config struct {
-	Servers   `yaml:"servers"`
-	Balancing string `yaml:"balancing"`
+	Servers   Servers `yaml:"servers"`
+	Balancing string  `yaml:"balancing"`
 }
 
 // Server represents configuration content for server.
@@ -24,7 +24,7 @@ type Server struct {
 // Servers is Server slice.
 type Servers []Server
 
-func (s Server) address() string {
+func (s Server) String() string {
 	return s.Scheme + "://" + s.Host + ":" + s.Port
 }
 
@@ -36,9 +36,9 @@ func (ss Servers) validate() error {
 			return errors.Errorf("invalid server configuration, scheme: %v, host: %v, port: %v", s.Scheme, s.Host, s.Port)
 		}
 
-		addr := s.address()
+		addr := s.String()
 
-		_, err := url.ParseRequestURI(s.address())
+		_, err := url.ParseRequestURI(addr)
 		if err != nil {
 			return errors.Wrapf(err, "invalid address: %s", addr)
 		}
@@ -73,7 +73,7 @@ func (ss Servers) GetAddresses() []string {
 	addrs := make([]string, len(ss))
 
 	for i, s := range ss {
-		addrs[i] = s.address()
+		addrs[i] = s.String()
 	}
 	return addrs
 }
