@@ -48,7 +48,7 @@ func Serve() cli.Command {
 		},
 		Action: func(c *cli.Context) error {
 			var cfg config.Config
-			err := config.LoadConfig(c.String("set"), &cfg)
+			err := config.Load(c.String("set"), &cfg)
 			if err != nil {
 				return errors.Wrap(err, "faild to load configuration file")
 			}

@@ -27,18 +27,18 @@ servers:
 balancing: ip-hash
 `
 
-func TestLoadConfig(t *testing.T) {
+func TestLoad(t *testing.T) {
 	const filename string = "test.yaml"
 	defer deleteFile(filename)
 	createFile(filename, []byte(testYaml))
 
 	var c Config
-	err := LoadConfig(filename, &c)
+	err := Load(filename, &c)
 	if err != nil {
 		t.Errorf("LoadConfig is faild. error: %v, c: %v", err, c)
 	}
 
-	expected := Config{
+	want := Config{
 		Servers: Servers{
 			{
 				Scheme: "http",
@@ -59,15 +59,15 @@ func TestLoadConfig(t *testing.T) {
 		Balancing: "ip-hash",
 	}
 
-	if !reflect.DeepEqual(expected, c) {
-		t.Errorf("LoadConfig is wrong. expected: %v, got: %v", expected, c)
+	if !reflect.DeepEqual(want, c) {
+		t.Errorf("LoadConfig is wrong. want: %v, got: %v", want, c)
 	}
 }
 
-func TestGetAddress(t *testing.T) {
+func TestGetAddresses(t *testing.T) {
 	tests := []struct {
-		servers  Servers
-		expected []string
+		servers Servers
+		want    []string
 	}{
 		{
 			servers: Servers{
@@ -87,7 +87,7 @@ func TestGetAddress(t *testing.T) {
 					Port:   "3333",
 				},
 			},
-			expected: []string{
+			want: []string{
 				"http://192.168.33.10:1111",
 				"http://192.168.33.10:2222",
 				"https://192.168.33.10:3333",
@@ -96,84 +96,44 @@ func TestGetAddress(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		got := test.servers.GetAddress()
+		got := test.servers.GetAddresses()
 
-		if !reflect.DeepEqual(test.expected, got) {
-			t.Errorf("tests[%d] - ToStringSlice is wrong. expected: %v, got: %v", i, test.expected, got)
-		}
-	}
-}
-
-func TestGetHostWithPort(t *testing.T) {
-	tests := []struct {
-		servers  Servers
-		expected []string
-	}{
-		{
-			servers: Servers{
-				{
-					Scheme: "http",
-					Host:   "192.168.33.10",
-					Port:   "1111",
-				},
-				{
-					Scheme: "http",
-					Host:   "192.168.33.10",
-					Port:   "2222",
-				},
-				{
-					Scheme: "https",
-					Host:   "192.168.33.10",
-					Port:   "3333",
-				},
-			},
-			expected: []string{
-				"192.168.33.10:1111",
-				"192.168.33.10:2222",
-				"192.168.33.10:3333",
-			},
-		},
-	}
-
-	for i, test := range tests {
-		got := test.servers.GetHostWithPort()
-
-		if !reflect.DeepEqual(test.expected, got) {
-			t.Errorf("tests[%d] - GetHostWithPort is wrong. expected: %v, got: %v", i, test.expected, got)
+		if !reflect.DeepEqual(test.want, got) {
+			t.Errorf("tests[%d] - ToStringSlice is wrong. want: %v, got: %v", i, test.want, got)
 		}
 	}
 }
 
 func TestExistsDuplicateHost(t *testing.T) {
 	tests := []struct {
-		hosts    []string
-		expected bool
+		addrs []string
+		want  bool
 	}{
 		{
-			hosts: []string{
-				"192.168.33.10:1111",
-				"192.168.33.10:2222",
+			addrs: []string{
+				"http://192.168.33.10:1111",
+				"http://192.168.33.10:2222",
 			},
-			expected: false,
+			want: false,
 		},
 		{
-			hosts: []string{
-				"192.168.33.10:2222",
-				"192.168.33.10:2222",
+			addrs: []string{
+				"http://192.168.33.10:2222",
+				"http://192.168.33.10:2222",
 			},
-			expected: true,
+			want: true,
 		},
 		{
-			hosts:    []string{},
-			expected: false,
+			addrs: []string{},
+			want:  false,
 		},
 	}
 
 	for i, test := range tests {
-		got := existsDuplicateHost(test.hosts)
+		got := duplicateAddressExists(test.addrs)
 
-		if test.expected != got {
-			t.Errorf("tests[%d] - existsDuplicateHost is wrong. expected: %v, got: %v", i, test.expected, got)
+		if test.want != got {
+			t.Errorf("tests[%d] - existsDuplicateHost is wrong. want: %v, got: %v", i, test.want, got)
 		}
 	}
 }
