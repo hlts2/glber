@@ -3,10 +3,11 @@ package main
 import (
 	"os"
 
-	"github.com/hlts2/go-LB/commands"
 	"github.com/kpango/glg"
 	"github.com/pkg/errors"
 	"github.com/urfave/cli"
+
+	"github.com/hlts2/go-LB/cmd"
 )
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 	app.Usage = "Load Balancer"
 	app.Version = "v0.0.1"
 	app.Commands = cli.Commands{
-		commands.ServeCommand(),
+		cmd.ServeCommand(),
 	}
 
 	err := app.Run(os.Args)
