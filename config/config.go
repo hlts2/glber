@@ -109,7 +109,7 @@ func (c *Config) validate() error {
 		"round-robin",
 		"least-connections":
 	default:
-		return errors.Errorf("invalid balancing algorithm: %v", c.Balancing)
+		return errors.Errorf("invalid balancing algorithm: %s", c.Balancing)
 	}
 
 	return nil
