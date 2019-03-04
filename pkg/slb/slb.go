@@ -1,7 +1,6 @@
 package slb
 
 import (
-	"net"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -9,31 +8,45 @@ import (
 
 // Server --
 type Server interface {
-	Serve(l net.Listener) error
-	ServeTLS(l net.Listener, certFile, keyFile string) error
+	Serve() error
+	ServeTLS(certFile, keyFile string) error
 	Shutdown()
 }
 
 // serverLoadBalancer --
 type serverLoadBalancer struct {
-	server *http.Server
+	*Config
+	Server *http.Server
 }
 
 // New --
-func New(cfg Config) Server {
-	return new(serverLoadBalancer)
+func New(cfg *Config) Server {
+	return &serverLoadBalancer{
+		Config: cfg,
+		Server: nil,
+	}
 }
 
-func (s *serverLoadBalancer) Serve(l net.Listener) error {
-	err := s.server.Serve(l)
+func (s *serverLoadBalancer) Serve() error {
+	lis, err := s.LoadBalancer.createListener()
+	if err != nil {
+		return errors.Wrap(err, "faild to create listener")
+	}
+
+	err = s.Server.Serve(lis)
 	if err != nil {
 		return errors.Wrap(err, "faild to serve")
 	}
 	return nil
 }
 
-func (s *serverLoadBalancer) ServeTLS(l net.Listener, certFile, keyFile string) error {
-	err := s.server.ServeTLS(l, certFile, keyFile)
+func (s *serverLoadBalancer) ServeTLS(certFile, keyFile string) error {
+	lis, err := s.LoadBalancer.createListener()
+	if err != nil {
+		return errors.Wrap(err, "faild to create listener")
+	}
+
+	err = s.Server.ServeTLS(lis, certFile, keyFile)
 	if err != nil {
 		return errors.Wrap(err, "faild to serve with TLS")
 	}

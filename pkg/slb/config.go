@@ -1,6 +1,7 @@
 package slb
 
 import (
+	"net"
 	"net/url"
 	"os"
 
@@ -76,6 +77,24 @@ func (sc ServerConfig) String() string {
 	return sc.Scheme + "://" + sc.Host + ":" + sc.Port
 }
 
+func (sc ServerConfig) createListener() (net.Listener, error) {
+	addr := sc.Host + ":" + sc.Port
+
+	lis, err := net.Listen("tcp", addr)
+	if err != nil {
+		return nil, errors.Wrapf(err, "faild to listen: %v", addr)
+	}
+
+	return lis, nil
+}
+
+func (sc ServerConfig) validate() error {
+	if len(sc.Scheme) == 0 || len(sc.Host) == 0 || len(sc.Port) == 0 {
+		return errors.Errorf("empty scheme: %v or host: %v or port: %v", sc.Scheme, sc.Host, sc.Port)
+	}
+	return nil
+}
+
 // ServerConfigs is Server slice.
 type ServerConfigs []ServerConfig
 
@@ -83,13 +102,14 @@ func (scs ServerConfigs) validate() error {
 	hostports := make([]string, len(scs))
 
 	for i, sc := range scs {
-		if len(sc.Scheme) == 0 || len(sc.Host) == 0 || len(sc.Port) == 0 {
-			return errors.Errorf("empty scheme: %v or host: %v or port: %v", sc.Scheme, sc.Host, sc.Port)
+		err := sc.validate()
+		if err != nil {
+			return errors.Wrap(err, "faild to validate server configuration")
 		}
 
 		addr := sc.String()
 
-		_, err := url.ParseRequestURI(addr)
+		_, err = url.ParseRequestURI(addr)
 		if err != nil {
 			return errors.Wrapf(err, "invalid address: %s", addr)
 		}
@@ -131,19 +151,20 @@ func (scs ServerConfigs) GetAddresses() []string {
 
 // Config represents an application configuration content (config.yaml).
 type Config struct {
-	ServerConfigs ServerConfigs `yaml:"servers"`
+	LoadBalancer  ServerConfig  `yaml:"server_load_balancer"`
 	Balancing     Balancing     `yaml:"balancing"`
+	ServerConfigs ServerConfigs `yaml:"servers"`
 }
 
 func (c *Config) validate() error {
 	err := c.ServerConfigs.validate()
 	if err != nil {
-		return errors.Wrap(err, "invalid server configuration")
+		return errors.Wrap(err, "falid to validate servers configuration")
 	}
 
 	err = c.Balancing.validate()
 	if err != nil {
-		return errors.Wrap(err, "invalid balancing configuration")
+		return errors.Wrap(err, "faild to valdate balancing configuration")
 	}
 
 	return nil
