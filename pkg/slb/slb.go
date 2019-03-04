@@ -5,8 +5,6 @@ import (
 	"net/http"
 
 	"github.com/pkg/errors"
-
-	"github.com/hlts2/go-LB/pkg/slb/balancer"
 )
 
 // Server --
@@ -22,7 +20,7 @@ type serverLoadBalancer struct {
 }
 
 // New --
-func New(cfg Config, balancer balancer.Balancer) Server {
+func New(cfg Config) Server {
 	return new(serverLoadBalancer)
 }
 
