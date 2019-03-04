@@ -4,10 +4,9 @@ import (
 	"net"
 	"net/http"
 
-	"google.golang.org/grpc/balancer"
-
-	"github.com/hlts2/gin-server-template/config"
 	"github.com/pkg/errors"
+
+	"github.com/hlts2/go-LB/pkg/slb/balancer"
 )
 
 // serverLoadBalancer --
@@ -16,7 +15,7 @@ type serverLoadBalancer struct {
 }
 
 // New -- // TODO:(@hlts2) FIXME interface -> Server intrface
-func New(cfg config.Config, balancer balancer.Balancer) interface{} {
+func New(cfg Config, balancer balancer.Balancer) interface{} {
 	return new(serverLoadBalancer)
 }
 

@@ -15,10 +15,36 @@ const (
 	LeastConnections = "least-connections"
 )
 
-// Config represents an application configuration content (config.yaml).
-type Config struct {
-	Servers   Servers `yaml:"servers"`
-	Balancing string  `yaml:"balancing"`
+// Load loads configuration content of the given the path.
+func Load(path string, cfg *Config) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return errors.Wrap(err, "faild to open configuration file")
+	}
+
+	err = yaml.NewDecoder(f).Decode(cfg)
+	if err != nil {
+		return errors.Wrap(err, "faild to decode")
+	}
+
+	err = cfg.validate()
+	if err != nil {
+		return errors.Wrap(err, "invalid configuration")
+	}
+
+	return nil
+}
+
+// Balancing is custom type for balancing algorithm name.
+type Balancing string
+
+func (b Balancing) validate() error {
+	switch b {
+	case IPHash, RoundRobin, LeastConnections:
+		return nil
+	default:
+		return errors.Errorf("invalid balancing algorithm: %s", b)
+	}
 }
 
 // Server represents configuration content for server.
@@ -28,12 +54,12 @@ type Server struct {
 	Port   string `yaml:"port"`
 }
 
-// Servers is Server slice.
-type Servers []Server
-
 func (s Server) String() string {
 	return s.Scheme + "://" + s.Host + ":" + s.Port
 }
+
+// Servers is Server slice.
+type Servers []Server
 
 func (ss Servers) validate() error {
 	hostports := make([]string, len(ss))
@@ -85,24 +111,10 @@ func (ss Servers) GetAddresses() []string {
 	return addrs
 }
 
-// Load loads configuration content of the given the path.
-func Load(path string, cfg *Config) error {
-	f, err := os.Open(path)
-	if err != nil {
-		return errors.Wrap(err, "faild to open configuration file")
-	}
-
-	err = yaml.NewDecoder(f).Decode(cfg)
-	if err != nil {
-		return errors.Wrap(err, "faild to decode")
-	}
-
-	err = cfg.validate()
-	if err != nil {
-		return errors.Wrap(err, "invalid configuration")
-	}
-
-	return nil
+// Config represents an application configuration content (config.yaml).
+type Config struct {
+	Servers   Servers   `yaml:"servers"`
+	Balancing Balancing `yaml:"balancing"`
 }
 
 func (c *Config) validate() error {
@@ -111,11 +123,9 @@ func (c *Config) validate() error {
 		return errors.Wrap(err, "invalid server configuration")
 	}
 
-	switch c.Balancing {
-	case IPHash, RoundRobin, LeastConnections:
-		// do nothing
-	default:
-		return errors.Errorf("invalid balancing algorithm: %s", c.Balancing)
+	err = c.Balancing.validate()
+	if err != nil {
+		return errors.Wrap(err, "invalid balancing configuration")
 	}
 
 	return nil
