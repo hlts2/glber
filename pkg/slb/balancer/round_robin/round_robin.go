@@ -17,6 +17,6 @@ func (h *roundrobin) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func (h *roundrobin) isBalaner() {}
 
 // New --
-func New() balancer.Balancer {
+func New(addrs []string, proxier balancer.Proxier) balancer.Balancer {
 	return new(roundrobin)
 }

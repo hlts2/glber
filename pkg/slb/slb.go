@@ -16,11 +16,6 @@ type Server interface {
 	Shutdown()
 }
 
-// Proxier --
-type Proxier interface {
-	Proxy(http.ResponseWriter, *http.Request)
-}
-
 // serverLoadBalancer --
 type serverLoadBalancer struct {
 	*Config
@@ -34,7 +29,10 @@ func NewServerLoadBalancer(cfg *Config) Server {
 	}
 
 	sbl.Server = &http.Server{
-		Handler: cfg.Balancing.Balancer(sbl),
+		Handler: cfg.Balancing.Balancer(
+			cfg.ServerConfigs.GetAddresses(),
+			sbl,
+		),
 	}
 
 	return sbl

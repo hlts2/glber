@@ -54,14 +54,14 @@ func (b Balancing) validate() error {
 }
 
 // Balancer --
-func (b Balancing) Balancer(proxier Proxier) balancer.Balancer {
+func (b Balancing) Balancer(addrs []string, proxier balancer.Proxier) balancer.Balancer {
 	switch b {
 	case IPHash:
-		return roundrobin.New()
+		return roundrobin.New(addrs, proxier)
 	case RoundRobin:
-		return iphash.New()
+		return iphash.New(addrs, proxier)
 	case LeastConnections:
-		return leastconnections.New()
+		return leastconnections.New(addrs, proxier)
 	}
 	return nil
 }
