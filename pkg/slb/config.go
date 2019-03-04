@@ -95,7 +95,7 @@ func (sc ServerConfig) validate() error {
 	return nil
 }
 
-// ServerConfigs is Server slice.
+// ServerConfigs is ServerConfig slice.
 type ServerConfigs []ServerConfig
 
 func (scs ServerConfigs) validate() error {
