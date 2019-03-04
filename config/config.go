@@ -90,9 +90,26 @@ func Load(path string, cfg *Config) error {
 		return errors.Wrap(err, "faild to decode")
 	}
 
-	err = cfg.Servers.validate()
+	err = cfg.validate()
+	if err != nil {
+		return errors.Wrap(err, "invalid configuration content")
+	}
+
+	return nil
+}
+
+func (c *Config) validate() error {
+	err := c.Servers.validate()
 	if err != nil {
 		return errors.Wrap(err, "invalid server configuration")
+	}
+
+	switch c.Balancing {
+	case "ip-hash",
+		"round-robin",
+		"least-connections":
+	default:
+		return errors.Errorf("invalid balancing algorithm: %v", c.Balancing)
 	}
 
 	return nil
