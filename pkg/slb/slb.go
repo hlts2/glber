@@ -9,13 +9,20 @@ import (
 	"github.com/hlts2/go-LB/pkg/slb/balancer"
 )
 
+// Server --
+type Server interface {
+	Serve(l net.Listener) error
+	ServeTLS(l net.Listener, certFile, keyFile string) error
+	Shutdown()
+}
+
 // serverLoadBalancer --
 type serverLoadBalancer struct {
 	server *http.Server
 }
 
-// New -- // TODO:(@hlts2) FIXME interface -> Server intrface
-func New(cfg Config, balancer balancer.Balancer) interface{} {
+// New --
+func New(cfg Config, balancer balancer.Balancer) Server {
 	return new(serverLoadBalancer)
 }
 

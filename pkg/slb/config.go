@@ -6,6 +6,11 @@ import (
 
 	"github.com/pkg/errors"
 	yaml "gopkg.in/yaml.v2"
+
+	"github.com/hlts2/go-LB/pkg/slb/balancer"
+	iphash "github.com/hlts2/go-LB/pkg/slb/balancer/ip_hash"
+	leastconnections "github.com/hlts2/go-LB/pkg/slb/balancer/least_connections"
+	roundrobin "github.com/hlts2/go-LB/pkg/slb/balancer/round_robin"
 )
 
 // Represents name of balancing algorithm.
@@ -45,6 +50,19 @@ func (b Balancing) validate() error {
 	default:
 		return errors.Errorf("invalid balancing algorithm: %s", b)
 	}
+}
+
+// Balancer --
+func (b Balancing) Balancer() balancer.Balancer {
+	switch b {
+	case IPHash:
+		return roundrobin.New()
+	case RoundRobin:
+		return iphash.New()
+	case LeastConnections:
+		return leastconnections.New()
+	}
+	return nil
 }
 
 // ServerConfig represents configuration content for server.
