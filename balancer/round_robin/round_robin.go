@@ -3,7 +3,7 @@ package roundrobin
 import (
 	"net/http"
 
-	"google.golang.org/grpc/balancer"
+	"github.com/hlts2/go-LB/balancer"
 )
 
 type roundrobin struct {

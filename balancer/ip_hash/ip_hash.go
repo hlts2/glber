@@ -3,7 +3,7 @@ package iphash
 import (
 	"net/http"
 
-	"github.com/hlts2/go-LB/pkg/balancer"
+	"github.com/hlts2/go-LB/balancer"
 )
 
 type iphash struct {

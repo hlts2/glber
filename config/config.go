@@ -99,7 +99,7 @@ func Load(path string, cfg *Config) error {
 
 	err = cfg.validate()
 	if err != nil {
-		return errors.Wrap(err, "invalid configuration content")
+		return errors.Wrap(err, "invalid configuration")
 	}
 
 	return nil
