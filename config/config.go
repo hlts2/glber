@@ -8,6 +8,13 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// Represents name of balancing algorithm.
+const (
+	IPHash           = "ip-hash"
+	RoundRobin       = "round-robin"
+	LeastConnections = "least-connections"
+)
+
 // Config represents an application configuration content (config.yaml).
 type Config struct {
 	Servers   Servers `yaml:"servers"`
@@ -105,9 +112,8 @@ func (c *Config) validate() error {
 	}
 
 	switch c.Balancing {
-	case "ip-hash",
-		"round-robin",
-		"least-connections":
+	case IPHash, RoundRobin, LeastConnections:
+		// do nothing
 	default:
 		return errors.Errorf("invalid balancing algorithm: %s", c.Balancing)
 	}
