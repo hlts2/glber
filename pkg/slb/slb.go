@@ -1,8 +1,11 @@
 package slb
 
 import (
+	"context"
 	"net/http"
+	"time"
 
+	"github.com/kpango/glg"
 	"github.com/pkg/errors"
 )
 
@@ -54,4 +57,15 @@ func (s *serverLoadBalancer) ServeTLS(certFile, keyFile string) error {
 	return nil
 }
 
-func (s *serverLoadBalancer) Shutdown() {}
+func (s *serverLoadBalancer) Shutdown() {
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	err := s.Server.Shutdown(ctx)
+
+	glg.Info("All http(s) requets finished")
+
+	if err != nil {
+		glg.Errorf("faild to shutdown server load balancer: %v", err)
+	}
+}
