@@ -55,7 +55,7 @@ func (ss Servers) validate() error {
 	return nil
 }
 
-// duplicateExists returns true if there is duplicte in to the values.
+// duplicateExists returns true if there is duplicte in to values.
 func duplicateExists(vs []string) bool {
 	m := make(map[string]bool, len(vs))
 
