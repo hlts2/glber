@@ -39,7 +39,7 @@ func TestLoad(t *testing.T) {
 	}
 
 	want := Config{
-		ServerConfigs: ServerConfigs{
+		ServerConfigs: &ServerConfigs{
 			{
 				Scheme: "http",
 				Host:   "192.168.33.10",

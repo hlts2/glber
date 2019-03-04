@@ -151,9 +151,9 @@ func (scs ServerConfigs) GetAddresses() []string {
 
 // Config represents an application configuration content (config.yaml).
 type Config struct {
-	LoadBalancer  ServerConfig  `yaml:"server_load_balancer"`
-	Balancing     Balancing     `yaml:"balancing"`
-	ServerConfigs ServerConfigs `yaml:"servers"`
+	LoadBalancer  *ServerConfig  `yaml:"server_load_balancer"`
+	Balancing     Balancing      `yaml:"balancing"`
+	ServerConfigs *ServerConfigs `yaml:"servers"`
 }
 
 func (c *Config) validate() error {
