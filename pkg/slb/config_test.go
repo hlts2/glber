@@ -1,4 +1,4 @@
-package config
+package slb
 
 import (
 	"io/ioutil"
