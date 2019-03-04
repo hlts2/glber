@@ -54,22 +54,22 @@ type ServerConfig struct {
 	Port   string `yaml:"port"`
 }
 
-func (s ServerConfig) String() string {
-	return s.Scheme + "://" + s.Host + ":" + s.Port
+func (sc ServerConfig) String() string {
+	return sc.Scheme + "://" + sc.Host + ":" + sc.Port
 }
 
-// ServersConfig is Server slice.
-type ServersConfig []ServerConfig
+// ServerConfigs is Server slice.
+type ServerConfigs []ServerConfig
 
-func (ss ServersConfig) validate() error {
-	hostports := make([]string, len(ss))
+func (scs ServerConfigs) validate() error {
+	hostports := make([]string, len(scs))
 
-	for i, s := range ss {
-		if len(s.Scheme) == 0 || len(s.Host) == 0 || len(s.Port) == 0 {
-			return errors.Errorf("empty scheme: %v or host: %v or port: %v", s.Scheme, s.Host, s.Port)
+	for i, sc := range scs {
+		if len(sc.Scheme) == 0 || len(sc.Host) == 0 || len(sc.Port) == 0 {
+			return errors.Errorf("empty scheme: %v or host: %v or port: %v", sc.Scheme, sc.Host, sc.Port)
 		}
 
-		addr := s.String()
+		addr := sc.String()
 
 		_, err := url.ParseRequestURI(addr)
 		if err != nil {
@@ -77,7 +77,7 @@ func (ss ServersConfig) validate() error {
 		}
 
 		// http://127.0.0.1:80 => 127.0.0.1:80
-		hostports[i] = addr[len(s.Scheme)+3:]
+		hostports[i] = addr[len(sc.Scheme)+3:]
 	}
 
 	ok := duplicateExists(hostports)
@@ -102,23 +102,23 @@ func duplicateExists(vs []string) bool {
 }
 
 // GetAddresses returns address of servers
-func (ss ServersConfig) GetAddresses() []string {
-	addrs := make([]string, len(ss))
+func (scs ServerConfigs) GetAddresses() []string {
+	addrs := make([]string, len(scs))
 
-	for i, s := range ss {
-		addrs[i] = s.String()
+	for i, sc := range scs {
+		addrs[i] = sc.String()
 	}
 	return addrs
 }
 
 // Config represents an application configuration content (config.yaml).
 type Config struct {
-	ServersConfig ServersConfig `yaml:"servers"`
+	ServerConfigs ServerConfigs `yaml:"servers"`
 	Balancing     Balancing     `yaml:"balancing"`
 }
 
 func (c *Config) validate() error {
-	err := c.ServersConfig.validate()
+	err := c.ServerConfigs.validate()
 	if err != nil {
 		return errors.Wrap(err, "invalid server configuration")
 	}
