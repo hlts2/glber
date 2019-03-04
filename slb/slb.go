@@ -1,4 +1,8 @@
-package server
+package slb
+
+// ServerLoadBalancer --
+type ServerLoadBalancer struct {
+}
 
 // // ErrInvalidBalancingAlgorithm is error of invalid balancing algorithm
 // var ErrInvalidBalancingAlgorithm = errors.New("invalid balancing algorithm")

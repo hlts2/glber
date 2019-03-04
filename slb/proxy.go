@@ -1,4 +1,4 @@
-package server
+package slb
 
 // func (lb *LB) reverseProxy(scheme, destHost string, w http.ResponseWriter, req *http.Request) {
 // 	req.URL.Scheme = scheme

@@ -1,4 +1,4 @@
-package server
+package slb
 
 // func (lb *LB) leastConnectionsBalancing(w http.ResponseWriter, req *http.Request) {
 // 	lc := lb.balancing.GetLeastConnections()
