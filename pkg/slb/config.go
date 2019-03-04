@@ -54,7 +54,7 @@ func (b Balancing) validate() error {
 }
 
 // Balancer --
-func (b Balancing) Balancer() balancer.Balancer {
+func (b Balancing) Balancer(proxier Proxier) balancer.Balancer {
 	switch b {
 	case IPHash:
 		return roundrobin.New()

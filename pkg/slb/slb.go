@@ -16,20 +16,32 @@ type Server interface {
 	Shutdown()
 }
 
+// Proxier --
+type Proxier interface {
+	Proxy(http.ResponseWriter, *http.Request)
+}
+
 // serverLoadBalancer --
 type serverLoadBalancer struct {
 	*Config
 	*http.Server
 }
 
-// New --
-func New(cfg *Config) Server {
-	return &serverLoadBalancer{
+// NewServerLoadBalancer --
+func NewServerLoadBalancer(cfg *Config) Server {
+	sbl := &serverLoadBalancer{
 		Config: cfg,
-		Server: &http.Server{
-			Handler: cfg.Balancing.Balancer(),
-		},
 	}
+
+	sbl.Server = &http.Server{
+		Handler: cfg.Balancing.Balancer(sbl),
+	}
+
+	return sbl
+}
+
+func (s *serverLoadBalancer) Proxy(w http.ResponseWriter, req *http.Request) {
+	// TODO: not yet implemented
 }
 
 func (s *serverLoadBalancer) Serve() error {
