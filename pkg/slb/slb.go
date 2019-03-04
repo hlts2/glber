@@ -16,7 +16,7 @@ type Server interface {
 // serverLoadBalancer --
 type serverLoadBalancer struct {
 	*Config
-	Server *http.Server
+	*http.Server
 }
 
 // New --
