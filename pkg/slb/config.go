@@ -47,21 +47,21 @@ func (b Balancing) validate() error {
 	}
 }
 
-// Server represents configuration content for server.
-type Server struct {
+// ServerConfig represents configuration content for server.
+type ServerConfig struct {
 	Scheme string `yaml:"scheme"`
 	Host   string `yaml:"host"`
 	Port   string `yaml:"port"`
 }
 
-func (s Server) String() string {
+func (s ServerConfig) String() string {
 	return s.Scheme + "://" + s.Host + ":" + s.Port
 }
 
-// Servers is Server slice.
-type Servers []Server
+// ServersConfig is Server slice.
+type ServersConfig []ServerConfig
 
-func (ss Servers) validate() error {
+func (ss ServersConfig) validate() error {
 	hostports := make([]string, len(ss))
 
 	for i, s := range ss {
@@ -102,7 +102,7 @@ func duplicateExists(vs []string) bool {
 }
 
 // GetAddresses returns address of servers
-func (ss Servers) GetAddresses() []string {
+func (ss ServersConfig) GetAddresses() []string {
 	addrs := make([]string, len(ss))
 
 	for i, s := range ss {
@@ -113,12 +113,12 @@ func (ss Servers) GetAddresses() []string {
 
 // Config represents an application configuration content (config.yaml).
 type Config struct {
-	Servers   Servers   `yaml:"servers"`
-	Balancing Balancing `yaml:"balancing"`
+	ServersConfig ServersConfig `yaml:"servers"`
+	Balancing     Balancing     `yaml:"balancing"`
 }
 
 func (c *Config) validate() error {
-	err := c.Servers.validate()
+	err := c.ServersConfig.validate()
 	if err != nil {
 		return errors.Wrap(err, "invalid server configuration")
 	}

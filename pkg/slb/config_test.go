@@ -39,7 +39,7 @@ func TestLoad(t *testing.T) {
 	}
 
 	want := Config{
-		Servers: Servers{
+		ServersConfig: ServersConfig{
 			{
 				Scheme: "http",
 				Host:   "192.168.33.10",
@@ -66,11 +66,11 @@ func TestLoad(t *testing.T) {
 
 func TestGetAddresses(t *testing.T) {
 	tests := []struct {
-		servers Servers
+		servers ServersConfig
 		want    []string
 	}{
 		{
-			servers: Servers{
+			servers: ServersConfig{
 				{
 					Scheme: "http",
 					Host:   "192.168.33.10",
