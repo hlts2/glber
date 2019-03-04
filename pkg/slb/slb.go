@@ -4,25 +4,19 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/hlts2/go-LB/balancer"
-	"github.com/hlts2/go-LB/config"
+	"google.golang.org/grpc/balancer"
+
+	"github.com/hlts2/gin-server-template/config"
 	"github.com/pkg/errors"
 )
-
-// Server --
-type Server interface {
-	Serve(l net.Listener) error
-	ServeTLS(l net.Listener, certFile, keyFile string) error
-	Shutdown()
-}
 
 // serverLoadBalancer --
 type serverLoadBalancer struct {
 	server *http.Server
 }
 
-// New --
-func New(cfg config.Config, balancer balancer.Balancer) Server {
+// New -- // TODO:(@hlts2) FIXME interface -> Server intrface
+func New(cfg config.Config, balancer balancer.Balancer) interface{} {
 	return new(serverLoadBalancer)
 }
 
