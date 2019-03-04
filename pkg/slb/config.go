@@ -89,8 +89,8 @@ func (sc ServerConfig) createListener() (net.Listener, error) {
 }
 
 func (sc ServerConfig) validate() error {
-	if len(sc.Scheme) == 0 || len(sc.Host) == 0 || len(sc.Port) == 0 {
-		return errors.Errorf("empty scheme: %v or host: %v or port: %v", sc.Scheme, sc.Host, sc.Port)
+	if len(sc.Scheme) == 0 || len(sc.Port) == 0 {
+		return errors.Errorf("missing protocol scheme or port")
 	}
 	return nil
 }

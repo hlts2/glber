@@ -26,7 +26,9 @@ type serverLoadBalancer struct {
 func New(cfg *Config) Server {
 	return &serverLoadBalancer{
 		Config: cfg,
-		Server: nil,
+		Server: &http.Server{
+			Handler: cfg.Balancing.Balancer(),
+		},
 	}
 }
 
