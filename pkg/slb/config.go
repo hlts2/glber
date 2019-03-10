@@ -46,7 +46,7 @@ func (b Balancing) validate() error {
 }
 
 // Handler returns balancer.Handler implementation.
-func (b Balancing) Handler(addrs []*url.URL, proxier balancer.Proxier) balancer.Handler {
+func (b Balancing) Handler(addrs []url.URL, proxier balancer.Proxier) balancer.Handler {
 	// switch b {
 	// case IPHash:
 	// 	return roundrobin.New(addrs, proxier)
@@ -132,14 +132,14 @@ func duplicateExists(vs []string) bool {
 	return false
 }
 
-// getAddresses returns address of servers
-func (scs ServerConfigs) getAddresses() []*url.URL {
-	addrs := make([]*url.URL, len(scs))
+// getURLs returns url of servers.
+func (scs ServerConfigs) getURLs() []url.URL {
+	urls := make([]url.URL, len(scs))
 
 	for i, sc := range scs {
-		addrs[i] = sc.url
+		urls[i] = *sc.url
 	}
-	return addrs
+	return urls
 }
 
 // Config represents an application configuration content (config.yaml).

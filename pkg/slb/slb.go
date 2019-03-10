@@ -52,7 +52,7 @@ func CreateSLB(cfg *Config, ops ...Option) (Server, error) {
 
 	sbl.Server = &http.Server{
 		Handler: cfg.Balancing.Handler(
-			cfg.BackendServerConfigs.getAddresses(),
+			cfg.BackendServerConfigs.getURLs(),
 			sbl,
 		),
 	}
