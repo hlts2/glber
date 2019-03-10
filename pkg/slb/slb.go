@@ -25,8 +25,12 @@ type serverLoadBalancer struct {
 	Director func(*url.URL) func(*http.Request)
 }
 
-// NewServerLoadBalancer --
-func NewServerLoadBalancer(cfg *Config) Server {
+// CreateSLB --
+func CreateSLB(cfg *Config) (Server, error) {
+	if err := cfg.validate(); err != nil {
+		return nil, errors.Wrap(err, "invalid configuration")
+	}
+
 	sbl := &serverLoadBalancer{
 		Config: cfg,
 		Director: func(target *url.URL) func(*http.Request) {
@@ -54,7 +58,7 @@ func NewServerLoadBalancer(cfg *Config) Server {
 		),
 	}
 
-	return sbl
+	return sbl, nil
 }
 
 func (s *serverLoadBalancer) Proxy(target *url.URL, w http.ResponseWriter, req *http.Request) {

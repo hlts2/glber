@@ -33,11 +33,6 @@ func Load(path string, cfg *Config) error {
 		return errors.Wrap(err, "faild to decode")
 	}
 
-	err = cfg.validate()
-	if err != nil {
-		return errors.Wrap(err, "invalid configuration")
-	}
-
 	return nil
 }
 
