@@ -7,7 +7,7 @@ import (
 )
 
 type iphash struct {
-	balancer.Balancer
+	balancer.Handler
 }
 
 func (h *iphash) ServeHTTP(http.ResponseWriter, *http.Request) {
@@ -17,6 +17,6 @@ func (h *iphash) ServeHTTP(http.ResponseWriter, *http.Request) {
 func (h *iphash) isBalaner() {}
 
 // New --
-func New(addrs []string, proxier balancer.Proxier) balancer.Balancer {
+func New(addrs []string, proxier balancer.Proxier) balancer.Handler {
 	return nil
 }

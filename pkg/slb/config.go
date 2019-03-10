@@ -53,8 +53,8 @@ func (b Balancing) validate() error {
 	}
 }
 
-// Balancer --
-func (b Balancing) Balancer(addrs []string, proxier balancer.Proxier) balancer.Balancer {
+// Handler returns balancer.Handler implementation.
+func (b Balancing) Handler(addrs []string, proxier balancer.Proxier) balancer.Handler {
 	switch b {
 	case IPHash:
 		return roundrobin.New(addrs, proxier)

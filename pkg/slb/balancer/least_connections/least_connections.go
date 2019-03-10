@@ -7,7 +7,7 @@ import (
 )
 
 type leastconnections struct {
-	balancer.Balancer
+	balancer.Handler
 }
 
 func (h *leastconnections) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -17,6 +17,6 @@ func (h *leastconnections) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func (h *leastconnections) isBalaner() {}
 
 // New --
-func New(addrs []string, proxier balancer.Proxier) balancer.Balancer {
+func New(addrs []string, proxier balancer.Proxier) balancer.Handler {
 	return new(leastconnections)
 }
