@@ -9,6 +9,9 @@ import (
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/hlts2/go-LB/pkg/slb/balancer"
+	iphash "github.com/hlts2/go-LB/pkg/slb/balancer/ip_hash"
+	leastconnections "github.com/hlts2/go-LB/pkg/slb/balancer/least_connections"
+	roundrobin "github.com/hlts2/go-LB/pkg/slb/balancer/round_robin"
 )
 
 // Represents name of balancing algorithm.
@@ -46,15 +49,15 @@ func (b Balancing) validate() error {
 }
 
 // Handler returns balancer.Handler implementation.
-func (b Balancing) Handler(addrs []url.URL, proxier balancer.Proxier) balancer.Handler {
-	// switch b {
-	// case IPHash:
-	// 	return roundrobin.New(addrs, proxier)
-	// case RoundRobin:
-	// 	return iphash.New(addrs, proxier)
-	// case LeastConnections:
-	// 	return leastconnections.New(addrs, proxier)
-	// }
+func (b Balancing) Handler(urls []url.URL, proxier balancer.Proxier) balancer.Handler {
+	switch b {
+	case IPHash:
+		return roundrobin.New(urls, proxier)
+	case RoundRobin:
+		return iphash.New(urls, proxier)
+	case LeastConnections:
+		return leastconnections.New(urls, proxier)
+	}
 	return &balancer.NopHandler{}
 }
 
