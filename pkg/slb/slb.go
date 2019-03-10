@@ -68,7 +68,9 @@ func (s *serverLoadBalancer) apply(ops ...Option) {
 }
 
 func (s *serverLoadBalancer) Proxy(target *url.URL, w http.ResponseWriter, req *http.Request) {
-	(&httputil.ReverseProxy{Director: s.RequestDirector(target)}).ServeHTTP(w, req)
+	(&httputil.ReverseProxy{
+		Director: s.RequestDirector(target),
+	}).ServeHTTP(w, req)
 }
 
 func (s *serverLoadBalancer) Serve() error {
