@@ -104,7 +104,7 @@ func (scs ServerConfigs) validate() error {
 	for i, sc := range scs {
 		err := sc.validate()
 		if err != nil {
-			return errors.Wrap(err, "faild to validate server configuration")
+			return errors.Wrap(err, "invalid server configuration")
 		}
 
 		addr := sc.String()
@@ -159,12 +159,12 @@ type Config struct {
 func (c *Config) validate() error {
 	err := c.BackendServerConfigs.validate()
 	if err != nil {
-		return errors.Wrap(err, "falid to validate backend servers configuration")
+		return errors.Wrap(err, "invalid backend servers configuration")
 	}
 
 	err = c.Balancing.validate()
 	if err != nil {
-		return errors.Wrap(err, "faild to valdate balancing configuration")
+		return errors.Wrap(err, "invalid balancing configuration")
 	}
 
 	return nil
