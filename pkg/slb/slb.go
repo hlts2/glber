@@ -62,7 +62,7 @@ func (s *serverLoadBalancer) Proxy(target *url.URL, w http.ResponseWriter, req *
 }
 
 func (s *serverLoadBalancer) Serve() error {
-	lis, err := s.LoadBalancer.createListener()
+	lis, err := s.LoadBalancerConfig.createListener()
 	if err != nil {
 		return errors.Wrap(err, "faild to create listener")
 	}
@@ -75,7 +75,7 @@ func (s *serverLoadBalancer) Serve() error {
 }
 
 func (s *serverLoadBalancer) ServeTLS(certFile, keyFile string) error {
-	lis, err := s.LoadBalancer.createListener()
+	lis, err := s.LoadBalancerConfig.createListener()
 	if err != nil {
 		return errors.Wrap(err, "faild to create listener")
 	}
