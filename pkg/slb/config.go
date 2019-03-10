@@ -42,7 +42,7 @@ type Balancing string
 
 // Handler returns balancer.Handler implementation.
 // If set invalid balancing algorithm, the default balancing algorithm(round-robin) is used.
-func (b Balancing) Handler(urls []url.URL, proxier balancer.Proxier) balancer.Handler {
+func (b Balancing) Handler(urls []*url.URL, proxier balancer.Proxier) balancer.Handler {
 	switch b {
 	case IPHash:
 		return roundrobin.New(urls, proxier)
@@ -135,11 +135,11 @@ func duplicateExists(vs []string) bool {
 }
 
 // getURLs returns url of servers.
-func (scs ServerConfigs) getURLs() []url.URL {
-	urls := make([]url.URL, len(scs))
+func (scs ServerConfigs) getURLs() []*url.URL {
+	urls := make([]*url.URL, len(scs))
 
 	for i, sc := range scs {
-		urls[i] = *sc.url
+		urls[i] = sc.url
 	}
 	return urls
 }
