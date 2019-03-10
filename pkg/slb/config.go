@@ -151,13 +151,13 @@ func (scs ServerConfigs) GetAddresses() []string {
 
 // Config represents an application configuration content (config.yaml).
 type Config struct {
-	LoadBalancerConfig *ServerConfig  `yaml:"server_load_balancer"`
-	Balancing          Balancing      `yaml:"balancing"`
-	ServerConfigs      *ServerConfigs `yaml:"servers"`
+	LoadBalancerConfig   *ServerConfig  `yaml:"server_load_balancer"`
+	Balancing            Balancing      `yaml:"balancing"`
+	BackendServerConfigs *ServerConfigs `yaml:"servers"`
 }
 
 func (c *Config) validate() error {
-	err := c.ServerConfigs.validate()
+	err := c.BackendServerConfigs.validate()
 	if err != nil {
 		return errors.Wrap(err, "falid to validate servers configuration")
 	}

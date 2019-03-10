@@ -49,7 +49,7 @@ func NewServerLoadBalancer(cfg *Config) Server {
 
 	sbl.Server = &http.Server{
 		Handler: cfg.Balancing.Handler(
-			cfg.ServerConfigs.GetAddresses(),
+			cfg.BackendServerConfigs.GetAddresses(),
 			sbl,
 		),
 	}
