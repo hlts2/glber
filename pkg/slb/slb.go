@@ -21,12 +21,13 @@ type Server interface {
 type serverLoadBalancer struct {
 	*Config
 	*http.Server
-	Director func(*url.URL) func(*http.Request)
+	Director        func(*url.URL) func(*http.Request)
+	HandlerDirector HandlerDirector
 }
 
 // CreateSLB returns Server implementation(*serverLoadBalancer) from the given Config.
 func CreateSLB(cfg *Config, ops ...Option) (Server, error) {
-	if err := cfg.Validate(); err != nil {
+	if err := cfg.validate(); err != nil {
 		return nil, errors.Wrap(err, "invalid configuration")
 	}
 
@@ -48,16 +49,21 @@ func CreateSLB(cfg *Config, ops ...Option) (Server, error) {
 				}
 			}
 		},
+		HandlerDirector: cfg.Balancing.Handler,
 	}
+	sbl.apply(ops...)
 
 	sbl.Server = &http.Server{
-		Handler: cfg.Balancing.Handler(
-			cfg.BackendServerConfigs.getURLs(),
-			sbl,
-		),
+		Handler: sbl.HandlerDirector(cfg.BackendServerConfigs.getURLs(), sbl),
 	}
 
 	return sbl, nil
+}
+
+func (s *serverLoadBalancer) apply(ops ...Option) {
+	for _, op := range ops {
+		op(s)
+	}
 }
 
 func (s *serverLoadBalancer) Proxy(target *url.URL, w http.ResponseWriter, req *http.Request) {

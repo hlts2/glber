@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/kpango/glg"
 	"github.com/pkg/errors"
 	yaml "gopkg.in/yaml.v2"
 
@@ -39,16 +40,8 @@ func Load(path string, cfg *Config) error {
 // Balancing is custom type for balancing algorithm name.
 type Balancing string
 
-func (b Balancing) validate() error {
-	switch b {
-	case IPHash, RoundRobin, LeastConnections:
-		return nil
-	default:
-		return errors.Errorf("invalid balancing algorithm: %s", b)
-	}
-}
-
 // Handler returns balancer.Handler implementation.
+// If set invalid balancing algorithm, the default balancing algorithm(round-robin) is used.
 func (b Balancing) Handler(urls []url.URL, proxier balancer.Proxier) balancer.Handler {
 	switch b {
 	case IPHash:
@@ -57,8 +50,10 @@ func (b Balancing) Handler(urls []url.URL, proxier balancer.Proxier) balancer.Ha
 		return iphash.New(urls, proxier)
 	case LeastConnections:
 		return leastconnections.New(urls, proxier)
+	default:
+		glg.Warnf("invalid balancing algorithm: %v, so will use the default algorithm: %v", b, RoundRobin)
+		return roundrobin.New(urls, proxier)
 	}
-	return &balancer.NopHandler{}
 }
 
 // ServerConfig represents configuration content for server.
@@ -153,15 +148,10 @@ type Config struct {
 }
 
 // Validate validates configuration content(*Config).
-func (c *Config) Validate() error {
+func (c *Config) validate() error {
 	err := c.BackendServerConfigs.validate()
 	if err != nil {
 		return errors.Wrap(err, "invalid backend servers configuration")
-	}
-
-	err = c.Balancing.validate()
-	if err != nil {
-		return errors.Wrap(err, "invalid balancing configuration")
 	}
 
 	return nil
