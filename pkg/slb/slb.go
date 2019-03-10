@@ -21,7 +21,7 @@ type Server interface {
 type serverLoadBalancer struct {
 	*Config
 	*http.Server
-	Director        func(*url.URL) func(*http.Request)
+	RequestDirector func(target *url.URL) func(*http.Request)
 	HandlerDirector HandlerDirector
 }
 
@@ -33,7 +33,7 @@ func CreateSLB(cfg *Config, ops ...Option) (Server, error) {
 
 	sbl := &serverLoadBalancer{
 		Config: cfg,
-		Director: func(target *url.URL) func(*http.Request) {
+		RequestDirector: func(target *url.URL) func(*http.Request) {
 			return func(req *http.Request) {
 				req.URL.Scheme = target.Scheme
 				req.URL.Host = target.Host
@@ -67,7 +67,7 @@ func (s *serverLoadBalancer) apply(ops ...Option) {
 }
 
 func (s *serverLoadBalancer) Proxy(target *url.URL, w http.ResponseWriter, req *http.Request) {
-	(&httputil.ReverseProxy{Director: s.Director(target)}).ServeHTTP(w, req)
+	(&httputil.ReverseProxy{Director: s.RequestDirector(target)}).ServeHTTP(w, req)
 }
 
 func (s *serverLoadBalancer) Serve() error {
