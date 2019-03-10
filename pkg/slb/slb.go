@@ -27,7 +27,8 @@ type serverLoadBalancer struct {
 
 // CreateSLB returns Server implementation(*serverLoadBalancer) from the given Config.
 func CreateSLB(cfg *Config, ops ...Option) (Server, error) {
-	if err := cfg.validate(); err != nil {
+	err := cfg.validate()
+	if err != nil {
 		return nil, errors.Wrap(err, "invalid configuration")
 	}
 
