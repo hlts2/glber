@@ -14,7 +14,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "go-LB"
 	app.Usage = "Load Balancer"
-	app.Version = "v0.0.1"
+	app.Version = "v1.0.0"
 	app.Commands = cli.Commands{
 		cmd.Serve(),
 	}

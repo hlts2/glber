@@ -2,8 +2,8 @@ language: go
 go:
   - "1.11.x"
   - master
-env:
-  - GO111GODULE=on
+end:
+  - GO111MODULE=on
 install: true
 script:
-  - go test -v ./...
+  - go test -v ./
