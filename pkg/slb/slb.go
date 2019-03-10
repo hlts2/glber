@@ -3,6 +3,8 @@ package slb
 import (
 	"context"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"time"
 
 	"github.com/kpango/glg"
@@ -20,12 +22,29 @@ type Server interface {
 type serverLoadBalancer struct {
 	*Config
 	*http.Server
+	Director func(*url.URL) func(*http.Request)
 }
 
 // NewServerLoadBalancer --
 func NewServerLoadBalancer(cfg *Config) Server {
 	sbl := &serverLoadBalancer{
 		Config: cfg,
+		Director: func(target *url.URL) func(*http.Request) {
+			return func(req *http.Request) {
+				req.URL.Scheme = target.Scheme
+				req.URL.Host = target.Host
+				req.URL.Path = target.Path
+
+				if target.RawQuery == "" || req.URL.RawQuery == "" {
+					req.URL.RawQuery = target.RawQuery + req.URL.RawQuery
+				} else {
+					req.URL.RawQuery = target.RawQuery + "&" + req.URL.RawQuery
+				}
+				if _, ok := req.Header["User-Agent"]; !ok {
+					req.Header.Set("User-Agent", "")
+				}
+			}
+		},
 	}
 
 	sbl.Server = &http.Server{
@@ -38,8 +57,8 @@ func NewServerLoadBalancer(cfg *Config) Server {
 	return sbl
 }
 
-func (s *serverLoadBalancer) Proxy(w http.ResponseWriter, req *http.Request) {
-	// TODO: not yet implemented
+func (s *serverLoadBalancer) Proxy(target *url.URL, w http.ResponseWriter, req *http.Request) {
+	(&httputil.ReverseProxy{Director: s.Director(target)}).ServeHTTP(w, req)
 }
 
 func (s *serverLoadBalancer) Serve() error {

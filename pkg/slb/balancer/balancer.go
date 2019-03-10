@@ -1,6 +1,9 @@
 package balancer
 
-import "net/http"
+import (
+	"net/http"
+	"net/url"
+)
 
 // Balancer --
 type Balancer interface {
@@ -10,5 +13,5 @@ type Balancer interface {
 
 // Proxier --
 type Proxier interface {
-	Proxy(http.ResponseWriter, *http.Request)
+	Proxy(*url.URL, http.ResponseWriter, *http.Request)
 }
