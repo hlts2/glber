@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/hlts2/go-LB/pkg/slb/balancer"
 	"github.com/hlts2/round-robin"
+
+	"github.com/hlts2/go-LB/pkg/slb/balancer"
 )
 
 type roundrobinHandler struct {
