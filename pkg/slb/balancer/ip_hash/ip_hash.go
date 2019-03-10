@@ -16,7 +16,7 @@ func (h *iphash) ServeHTTP(http.ResponseWriter, *http.Request) {
 
 func (h *iphash) isBalaner() {}
 
-// New --
+// New returns balancer.Handler implementation(*iphash).
 func New(addrs []string, proxier balancer.Proxier) balancer.Handler {
 	return nil
 }

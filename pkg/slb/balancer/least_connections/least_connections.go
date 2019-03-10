@@ -16,7 +16,7 @@ func (h *leastconnections) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 func (h *leastconnections) isBalaner() {}
 
-// New --
+// New returns balancer.Handler implementation(*leastconnections).
 func New(addrs []string, proxier balancer.Proxier) balancer.Handler {
 	return new(leastconnections)
 }

@@ -159,7 +159,7 @@ type Config struct {
 func (c *Config) validate() error {
 	err := c.BackendServerConfigs.validate()
 	if err != nil {
-		return errors.Wrap(err, "falid to validate servers configuration")
+		return errors.Wrap(err, "falid to validate backend servers configuration")
 	}
 
 	err = c.Balancing.validate()
