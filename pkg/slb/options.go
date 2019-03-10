@@ -13,8 +13,10 @@ type Option func(*serverLoadBalancer)
 type HandlerDirector func(urls []url.URL, proxier balancer.Proxier) balancer.Handler
 
 // WithBalancingHandlerDirector returns an Option that sets the Balancer.Handler implementation.
-func WithBalancingHandlerDirector(f HandlerDirector) func(*serverLoadBalancer) {
+func WithBalancingHandlerDirector(d HandlerDirector) func(*serverLoadBalancer) {
 	return func(s *serverLoadBalancer) {
-		// TODO:
+		if d != nil {
+			s.HandlerDirector = d
+		}
 	}
 }
