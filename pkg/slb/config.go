@@ -9,9 +9,6 @@ import (
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/hlts2/go-LB/pkg/slb/balancer"
-	iphash "github.com/hlts2/go-LB/pkg/slb/balancer/ip_hash"
-	leastconnections "github.com/hlts2/go-LB/pkg/slb/balancer/least_connections"
-	roundrobin "github.com/hlts2/go-LB/pkg/slb/balancer/round_robin"
 )
 
 // Represents name of balancing algorithm.
@@ -49,15 +46,15 @@ func (b Balancing) validate() error {
 }
 
 // Handler returns balancer.Handler implementation.
-func (b Balancing) Handler(addrs []string, proxier balancer.Proxier) balancer.Handler {
-	switch b {
-	case IPHash:
-		return roundrobin.New(addrs, proxier)
-	case RoundRobin:
-		return iphash.New(addrs, proxier)
-	case LeastConnections:
-		return leastconnections.New(addrs, proxier)
-	}
+func (b Balancing) Handler(addrs []*url.URL, proxier balancer.Proxier) balancer.Handler {
+	// switch b {
+	// case IPHash:
+	// 	return roundrobin.New(addrs, proxier)
+	// case RoundRobin:
+	// 	return iphash.New(addrs, proxier)
+	// case LeastConnections:
+	// 	return leastconnections.New(addrs, proxier)
+	// }
 	return &balancer.NopHandler{}
 }
 
@@ -66,6 +63,7 @@ type ServerConfig struct {
 	Scheme string `yaml:"scheme"`
 	Host   string `yaml:"host"`
 	Port   string `yaml:"port"`
+	url    *url.URL
 }
 
 func (sc ServerConfig) String() string {
@@ -90,7 +88,7 @@ func (sc ServerConfig) validate() error {
 	return nil
 }
 
-// ServerConfigs is ServerConfig slice.
+// ServerConfigs represents ServerConfig slice.
 type ServerConfigs []ServerConfig
 
 func (scs ServerConfigs) validate() error {
@@ -104,7 +102,7 @@ func (scs ServerConfigs) validate() error {
 
 		addr := sc.String()
 
-		_, err = url.ParseRequestURI(addr)
+		scs[i].url, err = url.ParseRequestURI(addr)
 		if err != nil {
 			return errors.Wrapf(err, "invalid address: %s", addr)
 		}
@@ -134,24 +132,25 @@ func duplicateExists(vs []string) bool {
 	return false
 }
 
-// GetAddresses returns address of servers
-func (scs ServerConfigs) GetAddresses() []string {
-	addrs := make([]string, len(scs))
+// getAddresses returns address of servers
+func (scs ServerConfigs) getAddresses() []*url.URL {
+	addrs := make([]*url.URL, len(scs))
 
 	for i, sc := range scs {
-		addrs[i] = sc.String()
+		addrs[i] = sc.url
 	}
 	return addrs
 }
 
 // Config represents an application configuration content (config.yaml).
 type Config struct {
-	LoadBalancerConfig   *ServerConfig  `yaml:"server_load_balancer"`
-	Balancing            Balancing      `yaml:"balancing"`
-	BackendServerConfigs *ServerConfigs `yaml:"servers"`
+	LoadBalancerConfig   *ServerConfig `yaml:"server_load_balancer"`
+	Balancing            Balancing     `yaml:"balancing"`
+	BackendServerConfigs ServerConfigs `yaml:"servers"`
 }
 
-func (c *Config) validate() error {
+// Validate validates configuration content(*Config).
+func (c *Config) Validate() error {
 	err := c.BackendServerConfigs.validate()
 	if err != nil {
 		return errors.Wrap(err, "invalid backend servers configuration")

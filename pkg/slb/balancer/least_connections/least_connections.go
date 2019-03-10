@@ -2,6 +2,7 @@ package leastconnections
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/hlts2/go-LB/pkg/slb/balancer"
 )
@@ -17,6 +18,6 @@ func (h *leastconnections) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func (h *leastconnections) isBalaner() {}
 
 // New returns balancer.Handler implementation(*leastconnections).
-func New(addrs []string, proxier balancer.Proxier) balancer.Handler {
+func New(addrs []*url.URL, proxier balancer.Proxier) balancer.Handler {
 	return new(leastconnections)
 }

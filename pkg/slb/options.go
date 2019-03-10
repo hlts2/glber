@@ -2,10 +2,12 @@ package slb
 
 import "github.com/hlts2/go-LB/pkg/slb/balancer"
 
-// Option configures Config.
-type Option func(*Config)
+// Option configures serverLoadBalancer.
+type Option func(*serverLoadBalancer)
 
-// WithBalancingHandler returns an Option that sets the Balancer.Handler implementation.
-func WithBalancingHandler(handler balancer.Handler) func(*Config) {
-	return func(cfg *Config) {}
+// WithBalancerHandler returns an Option that sets the Balancer.Handler implementation.
+func WithBalancerHandler(handler balancer.Handler) func(*serverLoadBalancer) {
+	return func(s *serverLoadBalancer) {
+		// TODO:
+	}
 }
