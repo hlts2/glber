@@ -11,21 +11,20 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Server --
+// Server is an interface for representing server load balancer implementations.
 type Server interface {
 	Serve() error
 	ServeTLS(certFile, keyFile string) error
 	Shutdown()
 }
 
-// serverLoadBalancer --
 type serverLoadBalancer struct {
 	*Config
 	*http.Server
 	Director func(*url.URL) func(*http.Request)
 }
 
-// CreateSLB --
+// CreateSLB returns Server implementation(*serverLoadBalancer) from the given Config.
 func CreateSLB(cfg *Config) (Server, error) {
 	if err := cfg.validate(); err != nil {
 		return nil, errors.Wrap(err, "invalid configuration")
