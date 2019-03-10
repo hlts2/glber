@@ -19,5 +19,5 @@ func (h *iphash) isBalaner() {}
 
 // New returns balancer.Handler implementation(*iphash).
 func New(addrs []url.URL, proxier balancer.Proxier) balancer.Handler {
-	return nil
+	return &iphash{}
 }

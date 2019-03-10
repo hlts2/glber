@@ -90,6 +90,10 @@ func (sc ServerConfig) validate() error {
 type ServerConfigs []ServerConfig
 
 func (scs ServerConfigs) validate() error {
+	if len(scs) == 0 {
+		return errors.New("backend servers dose not exist")
+	}
+
 	hostports := make([]string, len(scs))
 
 	for i, sc := range scs {
