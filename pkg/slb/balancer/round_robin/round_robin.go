@@ -12,6 +12,7 @@ import (
 type roundrobinHandler struct {
 	rr      roundrobin.RoundRobin
 	proxier balancer.Proxier
+
 	balancer.Handler
 }
 
