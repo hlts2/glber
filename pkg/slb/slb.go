@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Server is an interface for representing server load balancer implementations.
+// Server is an interface for representing server load balancer implementation.
 type Server interface {
 	Serve() error
 	ServeTLS(certFile, keyFile string) error
