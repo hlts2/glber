@@ -25,7 +25,7 @@ type serverLoadBalancer struct {
 }
 
 // CreateSLB returns Server implementation(*serverLoadBalancer) from the given Config.
-func CreateSLB(cfg *Config) (Server, error) {
+func CreateSLB(cfg *Config, ops ...Option) (Server, error) {
 	if err := cfg.validate(); err != nil {
 		return nil, errors.Wrap(err, "invalid configuration")
 	}

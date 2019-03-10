@@ -58,7 +58,7 @@ func (b Balancing) Handler(addrs []string, proxier balancer.Proxier) balancer.Ha
 	case LeastConnections:
 		return leastconnections.New(addrs, proxier)
 	}
-	return nil
+	return &balancer.NopHandler{}
 }
 
 // ServerConfig represents configuration content for server.
