@@ -18,7 +18,7 @@ go get github.com/hlts2/go-LB
 Config file `config.yml` describes configuration of load balancer.
 The following is a setting example.
 
-```
+```yaml
 host: 0.0.0.0
 port: 80
 balancing: round-robin
