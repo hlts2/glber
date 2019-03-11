@@ -55,11 +55,7 @@ balancing: round-robin # or ip-hash or least-connections
 ### Basic Example
 
 ```
-# Not TLS Mode
 $ go-LB serve -s config.yml
-
-# TLS Mode
-$ go-LB serve -s config.yml -tlspath ./tlsdirectory
 ```
 
 ## CLI Usage
