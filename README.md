@@ -19,23 +19,23 @@ Config file `config.yml` describes configuration of load balancer.
 The following is a setting example.
 
 ```
+host: 0.0.0.0
+port: 80
+balancing: round-robin
+
 servers:
-  -
-    scheme: http
-    host: 192.168.33.10
+  - scheme: http
+    host: 192.168.33.11
     port: 1111
 
-  -
-    scheme: http
-    host: 192.168.33.10
+  - scheme: http
+    host: 192.168.33.11
     port: 2222
 
-  -
-    scheme: http
-    host: 192.168.33.10
+  - scheme: http
+    host: 192.168.33.11
     port: 3333
 
-balancing: round-robin
 ```
 
 ### Balancing Algorithm
@@ -56,10 +56,10 @@ balancing: round-robin # or ip-hash or least-connections
 
 ```
 # Not TLS Mode
-$ go-LB serve -s config.yml -H x.x.x.x -p 8080
+$ go-LB serve -s config.yml
 
 # TLS Mode
-$ go-LB serve -s config.yml -H x.x.x.x -p 8080 -tlspath ./tlsdirectory
+$ go-LB serve -s config.yml -tlspath ./tlsdirectory
 ```
 
 ## CLI Usage
