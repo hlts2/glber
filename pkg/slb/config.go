@@ -1,7 +1,6 @@
 package slb
 
 import (
-	"net"
 	"net/url"
 	"os"
 
@@ -66,17 +65,6 @@ type ServerConfig struct {
 
 func (sc ServerConfig) String() string {
 	return sc.Scheme + "://" + sc.Host + ":" + sc.Port
-}
-
-func (sc ServerConfig) createListener() (net.Listener, error) {
-	addr := sc.Host + ":" + sc.Port
-
-	lis, err := net.Listen("tcp", addr)
-	if err != nil {
-		return nil, errors.Wrapf(err, "faild to listen: %v", addr)
-	}
-
-	return lis, nil
 }
 
 func (sc ServerConfig) validate() error {
@@ -146,14 +134,19 @@ func (scs ServerConfigs) getURLs() []*url.URL {
 
 // Config represents an application configuration content (config.yaml).
 type Config struct {
-	LoadBalancerConfig   *ServerConfig `yaml:"server_load_balancer"`
+	ServerConfig         `yaml:",inline"`
 	Balancing            Balancing     `yaml:"balancing"`
 	BackendServerConfigs ServerConfigs `yaml:"servers"`
 }
 
 // Validate validates configuration content(*Config).
 func (c *Config) validate() error {
-	err := c.BackendServerConfigs.validate()
+	err := c.ServerConfig.validate()
+	if err != nil {
+		return errors.Wrap(err, "invalid server configuration")
+	}
+
+	err = c.BackendServerConfigs.validate()
 	if err != nil {
 		return errors.Wrap(err, "invalid backend servers configuration")
 	}
