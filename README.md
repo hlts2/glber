@@ -22,19 +22,19 @@ The following is a setting example.
 host: 0.0.0.0
 port: 80
 balancing: round-robin
-
+tls:
+  enabled: true
+  cert_key: ./cert.key
+  key_key: ./key.key
 servers:
   - scheme: http
     host: 192.168.33.11
     port: 1111
-
   - scheme: http
     host: 192.168.33.11
     port: 2222
-
   - scheme: http
     host: 192.168.33.11
-    port: 3333
 
 ```
 
