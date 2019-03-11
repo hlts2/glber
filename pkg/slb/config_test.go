@@ -11,6 +11,10 @@ var testYaml = `
 host: 0.0.0.0
 port: 80
 balancing: round-robin
+tls:
+  enabled: true
+  cert_key: ./cert.key
+  key_key: ./key.key
 
 servers:
   - scheme: http
@@ -43,6 +47,11 @@ func TestLoad(t *testing.T) {
 			Port: "80",
 		},
 		Balancing: "round-robin",
+		TLSConfig: TLSConfig{
+			Enabled: true,
+			CertKey: "./cert.key",
+			KeyKey:  "./key.key",
+		},
 		BackendServerConfigs: ServerConfigs{
 			{
 				Scheme: "http",

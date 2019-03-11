@@ -132,9 +132,22 @@ func (scs ServerConfigs) getURLs() []*url.URL {
 	return urls
 }
 
+// TLSConfig represents the TLS configuration for server load balancer.
+type TLSConfig struct {
+	// Enable represents the server load balancer enable TLS or not.
+	Enabled bool `yaml:"enabled"`
+
+	// CertKey represents the environment variable name having the certificate file path of server load balancer.
+	CertKey string `yaml:"cert_key"`
+
+	// KeyKey represents the environment variable name having the private key file path of server load balancer certificate.
+	KeyKey string `yaml:"key_key"`
+}
+
 // Config represents an application configuration content (config.yaml).
 type Config struct {
 	ServerConfig         `yaml:",inline"`
+	TLSConfig            `yaml:"tls"`
 	Balancing            Balancing     `yaml:"balancing"`
 	BackendServerConfigs ServerConfigs `yaml:"servers"`
 }
