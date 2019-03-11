@@ -2,6 +2,7 @@ package slb
 
 import (
 	"context"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -74,7 +75,7 @@ func (s *serverLoadBalancer) Proxy(target *url.URL, w http.ResponseWriter, req *
 }
 
 func (s *serverLoadBalancer) Serve() error {
-	lis, err := s.LoadBalancerConfig.createListener()
+	lis, err := createListener(s.ServerConfig.Host, s.ServerConfig.Port)
 	if err != nil {
 		return errors.Wrap(err, "faild to create listener")
 	}
@@ -87,7 +88,7 @@ func (s *serverLoadBalancer) Serve() error {
 }
 
 func (s *serverLoadBalancer) ServeTLS(certFile, keyFile string) error {
-	lis, err := s.LoadBalancerConfig.createListener()
+	lis, err := createListener(s.ServerConfig.Host, s.ServerConfig.Port)
 	if err != nil {
 		return errors.Wrap(err, "faild to create listener")
 	}
@@ -98,6 +99,17 @@ func (s *serverLoadBalancer) ServeTLS(certFile, keyFile string) error {
 	}
 
 	return nil
+}
+
+func createListener(host, port string) (net.Listener, error) {
+	addr := host + ":" + port
+
+	lis, err := net.Listen("tcp", addr)
+	if err != nil {
+		return nil, errors.Wrapf(err, "faild to listen: %v", addr)
+	}
+
+	return lis, nil
 }
 
 func (s *serverLoadBalancer) Shutdown() {

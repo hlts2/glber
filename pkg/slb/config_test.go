@@ -8,23 +8,22 @@ import (
 )
 
 var testYaml = `
+host: 0.0.0.0
+port: 80
+balancing: round-robin
+
 servers:
-  -
-    scheme: http
-    host: 192.168.33.10
+  - scheme: http
+    host: 192.168.33.11
     port: 1111
 
-  -
-    scheme: http
-    host: 192.168.33.10
+  - scheme: http
+    host: 192.168.33.11
     port: 2222
 
-  -
-    scheme: http
-    host: 192.168.33.10
+  - scheme: http
+    host: 192.168.33.11
     port: 3333
-
-balancing: ip-hash
 `
 
 func TestLoad(t *testing.T) {
@@ -39,24 +38,28 @@ func TestLoad(t *testing.T) {
 	}
 
 	want := Config{
+		ServerConfig: ServerConfig{
+			Host: "0.0.0.0",
+			Port: "80",
+		},
+		Balancing: "round-robin",
 		BackendServerConfigs: ServerConfigs{
 			{
 				Scheme: "http",
-				Host:   "192.168.33.10",
+				Host:   "192.168.33.11",
 				Port:   "1111",
 			},
 			{
 				Scheme: "http",
-				Host:   "192.168.33.10",
+				Host:   "192.168.33.11",
 				Port:   "2222",
 			},
 			{
 				Scheme: "http",
-				Host:   "192.168.33.10",
+				Host:   "192.168.33.11",
 				Port:   "3333",
 			},
 		},
-		Balancing: "ip-hash",
 	}
 
 	if !reflect.DeepEqual(want, c) {
