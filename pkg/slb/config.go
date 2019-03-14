@@ -49,7 +49,6 @@ func (b Balancing) CreateHandler(urls []*url.URL, proxier balancer.Proxier) bala
 	case LeastConnections:
 		return leastconnections.New(urls, proxier)
 	default:
-		// glg.Warnf("invalid balancing algorithm: %v, so will use the default algorithm: %v", b, RoundRobin)
 		return roundrobin.New(urls, proxier)
 	}
 }
