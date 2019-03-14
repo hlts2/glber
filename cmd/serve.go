@@ -4,15 +4,6 @@ import (
 	"github.com/urfave/cli"
 )
 
-const (
-
-	// TLSCertFileName is cert file name for TLS
-	TLSCertFileName = "cert.pem"
-
-	// TLSKeyFileName is key file name for TLS
-	TLSKeyFileName = "key.pem"
-)
-
 // Serve is the command that serve load balancer
 func Serve() cli.Command {
 	return cli.Command{
@@ -23,21 +14,6 @@ func Serve() cli.Command {
 				Name:  "set, s",
 				Value: "config.yml",
 				Usage: "set the configuration file",
-			},
-			cli.StringFlag{
-				Name:  "host, H",
-				Value: "127.0.0.1",
-				Usage: "set the host name or IP",
-			},
-			cli.StringFlag{
-				Name:  "port, p",
-				Value: "8080",
-				Usage: "set the port number",
-			},
-			cli.StringFlag{
-				Name:  "tlspath",
-				Value: "",
-				Usage: "set the TLS directory",
 			},
 		},
 		Action: func(c *cli.Context) error {
