@@ -32,7 +32,7 @@ func Serve() cli.Command {
 				return errors.Wrap(err, "faild to create server load balancer")
 			}
 
-			glg.Info("Starting Server Load Balancer on %s", cfg.Host+":", cfg.Port)
+			glg.Infof("Starting Server Load Balancer on %s", cfg.Host+":"+cfg.Port)
 			err = s.ListenAndServe()
 			if err != nil {
 				return errors.Wrap(err, "faild to listen and serve")
