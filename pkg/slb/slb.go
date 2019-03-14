@@ -50,7 +50,7 @@ func CreateSLB(cfg *Config, ops ...Option) (Server, error) {
 				}
 			}
 		},
-		HandlerDirector: cfg.Balancing.Handler,
+		HandlerDirector: cfg.Balancing.CreateHandler,
 	}
 	sbl.apply(ops...)
 

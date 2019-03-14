@@ -4,7 +4,6 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/kpango/glg"
 	"github.com/pkg/errors"
 	yaml "gopkg.in/yaml.v2"
 
@@ -41,7 +40,7 @@ type Balancing string
 
 // Handler returns balancer.Handler implementation.
 // If set invalid balancing algorithm, the default balancing algorithm(round-robin) is used.
-func (b Balancing) Handler(urls []*url.URL, proxier balancer.Proxier) balancer.Handler {
+func (b Balancing) CreateHandler(urls []*url.URL, proxier balancer.Proxier) balancer.Handler {
 	switch b {
 	case IPHash:
 		return roundrobin.New(urls, proxier)
@@ -50,7 +49,7 @@ func (b Balancing) Handler(urls []*url.URL, proxier balancer.Proxier) balancer.H
 	case LeastConnections:
 		return leastconnections.New(urls, proxier)
 	default:
-		glg.Warnf("invalid balancing algorithm: %v, so will use the default algorithm: %v", b, RoundRobin)
+		// glg.Warnf("invalid balancing algorithm: %v, so will use the default algorithm: %v", b, RoundRobin)
 		return roundrobin.New(urls, proxier)
 	}
 }
