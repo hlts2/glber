@@ -11,27 +11,27 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:81a5fe743dae4ef2127d072d4dc901f2addbc85ff9d990c51b8a534b7800b52e"
+  digest = "1:2bc036fcc3c8fbe80b7e7e8b99eb2ac4a8e7ee6aec71c763cd44f87baa7db1d8"
   name = "github.com/hlts2/ip-hash"
   packages = ["."]
   pruneopts = "UT"
-  revision = "32413d73bf60d414d231cee410001d7103149abe"
+  revision = "0e4d407f7fb9195f934639859a25bbf0df2d2144"
 
 [[projects]]
   branch = "master"
-  digest = "1:f2d61203dc0a948111f3be6c8d659c6d96e4d3487618d2727a394335eb3fa33e"
+  digest = "1:fb510bb64c23b3d5297e1a07a49f9cb3bcd9bcbc97ed840f59aebb3fd39c3a4d"
   name = "github.com/hlts2/least-connections"
   packages = ["."]
   pruneopts = "UT"
-  revision = "fef0a2a954e74a8386be2f967e7ecc12177a4cd5"
+  revision = "b1f9b2e9bc9cdb43290d7e223880fefa47486be3"
 
 [[projects]]
   branch = "master"
-  digest = "1:42b3ad4f69194c01424826ba506ba66e709cc931ee017306d129e0b33c242117"
+  digest = "1:51263e3b1d075d6f848342c47ab1f3fefd2407a11d62fa7c5bf1d5f3b5d83de3"
   name = "github.com/hlts2/round-robin"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ed0fa29695374f828e270b40e3779f3ddf9f9791"
+  revision = "eb24115f39ce949a7e97ffe9e220c7f7036cd18e"
 
 [[projects]]
   digest = "1:ea11184d37725f7779503d5303e982369bff75b33d5428ee839e0d64bfb86c4b"

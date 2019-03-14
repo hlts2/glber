@@ -3,4 +3,6 @@ github.com/cespare/xxhash v1.1.0 h1:a6HrQnmkObjyL+Gs60czilIUGqrzKutQD6XZog3p+ko=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/hlts2/round-robin v0.0.0-20190310125306-13f89edbffc9 h1:YXI7S+k4V3CJo2QSuNsYIG7wxcCchdCjD0PeGOHqUjU=
 github.com/hlts2/round-robin v0.0.0-20190310125306-13f89edbffc9/go.mod h1:W8lLxeVXxsnT6I+wSxWxeuWU92lcx28QQDi7GH7gdJ4=
+github.com/hlts2/round-robin v0.0.0-20190314040659-eb24115f39ce h1:5ep70b4yOQwjyezkeYNSOi+8+JCfsPQELVOG6+tA9ck=
+github.com/hlts2/round-robin v0.0.0-20190314040659-eb24115f39ce/go.mod h1:W8lLxeVXxsnT6I+wSxWxeuWU92lcx28QQDi7GH7gdJ4=
 github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=

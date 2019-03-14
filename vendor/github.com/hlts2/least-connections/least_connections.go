@@ -47,9 +47,8 @@ func New(urls []*url.URL) (LeastConnections, error) {
 
 func (lc *leastConnections) Next() (*url.URL, func()) {
 	var (
-		min  = -1
-		idx  int
-		once sync.Once
+		min = -1
+		idx int
 	)
 
 	lc.mu.Lock()
@@ -64,11 +63,13 @@ func (lc *leastConnections) Next() (*url.URL, func()) {
 
 	lc.mu.Unlock()
 
+	var done bool
 	return lc.conns[idx].url, func() {
-		once.Do(func() {
-			lc.mu.Lock()
+		lc.mu.Lock()
+		if !done {
 			lc.conns[idx].cnt--
-			lc.mu.Unlock()
-		})
+			done = true
+		}
+		lc.mu.Unlock()
 	}
 }
