@@ -63,21 +63,21 @@ $ go-LB serve -s config.yml
 ```
 $ go-LB --help
 NAME:
-  go-LB - Load Balancer
+   go-LB - Load Balancer
 
 USAGE:
-  go-LB [global options] command [command options] [arguments...]
+   go-LB [global options] command [command options] [arguments...]
 
 VERSION:
-  v0.0.1
+   v1.0.0
 
 COMMANDS:
-  serve    serve load balancer
-  help, h  Shows a list of commands or help for one command
+     serve    serve load balancer
+     help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-  --help, -h     show help
-  --version, -v  print the version
+   --help, -h     show help
+   --version, -v  print the version
 ```
 
 ### Serve command
@@ -85,16 +85,13 @@ GLOBAL OPTIONS:
 ```
 $ go-LB serve --help
 NAME:
-  go-LB serve - serve load balancer
+   go-LB serve - serve load balancer
 
 USAGE:
-  go-LB serve [command options] [arguments...]
-
+   go-LB serve [command options] [arguments...]
+   
 OPTIONS:
-  --set value, -s value   set a config file of load balancer (default: "config.yml")
-  --host value, -H value  set a host name or IP of load balancer (default: "127.0.0.1")
-  --port value, -p value  set a port number of load balancer (default: "8080")
-  --tlspath value         set a TLS directory of load balancer
+   --set value, -s value  set the configuration file (default: "config.yml")
 ```
 
 ## TODO
