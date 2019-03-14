@@ -42,10 +42,8 @@ func TestLoad(t *testing.T) {
 	}
 
 	want := Config{
-		ServerConfig: ServerConfig{
-			Host: "0.0.0.0",
-			Port: "80",
-		},
+		Host:      "0.0.0.0",
+		Port:      "80",
 		Balancing: "round-robin",
 		TLSConfig: TLSConfig{
 			Enabled: true,

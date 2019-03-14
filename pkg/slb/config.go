@@ -144,7 +144,8 @@ type TLSConfig struct {
 
 // Config represents an application configuration content (config.yaml).
 type Config struct {
-	ServerConfig         `yaml:",inline"`
+	Host                 string `yaml:"host"`
+	Port                 string `yaml:"port"`
 	TLSConfig            `yaml:"tls"`
 	Balancing            Balancing     `yaml:"balancing"`
 	BackendServerConfigs ServerConfigs `yaml:"servers"`
@@ -152,12 +153,11 @@ type Config struct {
 
 // Validate validates configuration content(*Config).
 func (c *Config) validate() error {
-	err := c.ServerConfig.validate()
-	if err != nil {
-		return errors.Wrap(err, "invalid server configuration")
+	if len(c.Port) == 0 {
+		return errors.New("missing port")
 	}
 
-	err = c.BackendServerConfigs.validate()
+	err := c.BackendServerConfigs.validate()
 	if err != nil {
 		return errors.Wrap(err, "invalid backend servers configuration")
 	}
