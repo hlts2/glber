@@ -1,7 +1,11 @@
 package cmd
 
 import (
+	"github.com/kpango/glg"
+	"github.com/pkg/errors"
 	"github.com/urfave/cli"
+
+	"github.com/hlts2/go-LB/pkg/slb"
 )
 
 // Serve is the command that serve load balancer
@@ -17,45 +21,22 @@ func Serve() cli.Command {
 			},
 		},
 		Action: func(c *cli.Context) error {
-			// var cfg config.Config
-			// err := config.Load(c.String("set"), &cfg)
-			// if err != nil {
-			// 	return errors.Wrap(err, "faild to load configuration file")
-			// }
-			//
-			// lb := server.NewLB(c.String("host") + ":" + c.String("port")).Build(cfg)
-			//
-			// tlspath := c.String("tlspath")
-			//
-			// // NOT TLS Mode
-			// if tlspath == "" {
-			// 	err := lb.Serve()
-			// 	if err != nil {
-			// 		return errors.Wrap(err, "faild to run server")
-			// 	}
-			// 	return nil
-			// }
-			//
-			// var (
-			// 	certpath = filepath.Join(tlspath, TLSCertFileName)
-			// 	keypath  = filepath.Join(tlspath, TLSKeyFileName)
-			// )
-			//
-			// cert, err := tls.LoadX509KeyPair(certpath, keypath)
-			// if err != nil {
-			// 	return errors.Wrap(err, "faild to load certification file and key file")
-			// }
-			//
-			// tlsConfig := tls.Config{
-			// 	Certificates: []tls.Certificate{
-			// 		cert,
-			// 	},
-			// }
-			//
-			// err = lb.ServeTLS(&tlsConfig, certpath, keypath)
-			// if err != nil {
-			// 	return errors.Wrap(err, "faild to run tls server")
-			// }
+			var cfg slb.Config
+			err := slb.Load(c.String("set"), &cfg)
+			if err != nil {
+				return errors.Wrap(err, "faild to load configuration file")
+			}
+
+			s, err := slb.CreateSLB(&cfg)
+			if err != nil {
+				return errors.Wrap(err, "faild to create server load balancer")
+			}
+
+			glg.Info("Starting Server Load Balancer on %s", cfg.Host+":", cfg.Port)
+			err = s.ListenAndServe()
+			if err != nil {
+				return errors.Wrap(err, "faild to listen and serve")
+			}
 
 			return nil
 		},
