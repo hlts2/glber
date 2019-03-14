@@ -3,6 +3,7 @@ package slb
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -57,6 +58,8 @@ func CreateSLB(cfg *Config, ops ...Option) (Server, error) {
 	sbl.Server = &http.Server{
 		Handler: sbl.HandlerDirector(cfg.BackendServerConfigs.getURLs(), sbl),
 	}
+
+	fmt.Println(cfg.BackendServerConfigs.getURLs())
 
 	return sbl, nil
 }

@@ -38,13 +38,13 @@ func Load(path string, cfg *Config) error {
 // Balancing is custom type for balancing algorithm name.
 type Balancing string
 
-// Handler returns balancer.Handler implementation.
+// CreateHandler returns balancer.Handler implementation.
 // If set invalid balancing algorithm, the default balancing algorithm(round-robin) is used.
 func (b Balancing) CreateHandler(urls []*url.URL, proxier balancer.Proxier) balancer.Handler {
 	switch b {
-	case IPHash:
-		return roundrobin.New(urls, proxier)
 	case RoundRobin:
+		return roundrobin.New(urls, proxier)
+	case IPHash:
 		return iphash.New(urls, proxier)
 	case LeastConnections:
 		return leastconnections.New(urls, proxier)
