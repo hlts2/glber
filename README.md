@@ -1,4 +1,4 @@
-# [WIP] go-LB [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![GoDoc](http://godoc.org/github.com/hlts2/go-LB?status.svg)](http://godoc.org/github.com/hlts2/go-LB) [![Go Report Card](https://goreportcard.com/badge/github.com/hlts2/go-LB)](https://goreportcard.com/report/github.com/hlts2/go-LB) [![Join the chat at https://gitter.im/hlts2/go-LB](https://badges.gitter.im/hlts2/go-LB.svg)](https://gitter.im/hlts2/go-LB?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# go-LB [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![GoDoc](http://godoc.org/github.com/hlts2/go-LB?status.svg)](http://godoc.org/github.com/hlts2/go-LB) [![Go Report Card](https://goreportcard.com/badge/github.com/hlts2/go-LB)](https://goreportcard.com/report/github.com/hlts2/go-LB) [![Join the chat at https://gitter.im/hlts2/go-LB](https://badges.gitter.im/hlts2/go-LB.svg)](https://gitter.im/hlts2/go-LB?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 go-LB is a simple lightweight load balancer written in golang.
 
