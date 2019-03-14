@@ -7,10 +7,10 @@ import (
 	"github.com/pkg/errors"
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/hlts2/go-LB/pkg/slb/balancer"
-	iphash "github.com/hlts2/go-LB/pkg/slb/balancer/ip_hash"
-	leastconnections "github.com/hlts2/go-LB/pkg/slb/balancer/least_connections"
-	roundrobin "github.com/hlts2/go-LB/pkg/slb/balancer/round_robin"
+	"github.com/hlts2/glber/pkg/slb/balancer"
+	iphash "github.com/hlts2/glber/pkg/slb/balancer/ip_hash"
+	leastconnections "github.com/hlts2/glber/pkg/slb/balancer/least_connections"
+	roundrobin "github.com/hlts2/glber/pkg/slb/balancer/round_robin"
 )
 
 // Represents name of balancing algorithm.

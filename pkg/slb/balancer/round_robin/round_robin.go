@@ -6,7 +6,7 @@ import (
 
 	"github.com/hlts2/round-robin"
 
-	"github.com/hlts2/go-LB/pkg/slb/balancer"
+	"github.com/hlts2/glber/pkg/slb/balancer"
 )
 
 type roundrobinHandler struct {

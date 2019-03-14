@@ -3,7 +3,7 @@ package slb
 import (
 	"net/url"
 
-	"github.com/hlts2/go-LB/pkg/slb/balancer"
+	"github.com/hlts2/glber/pkg/slb/balancer"
 )
 
 // Option configures serverLoadBalancer.

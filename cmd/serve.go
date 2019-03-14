@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/urfave/cli"
 
-	"github.com/hlts2/go-LB/pkg/slb"
+	"github.com/hlts2/glber/pkg/slb"
 )
 
 // Serve is the command that serve load balancer

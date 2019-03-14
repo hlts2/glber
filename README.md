@@ -1,6 +1,6 @@
-# go-LB [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![GoDoc](http://godoc.org/github.com/hlts2/go-LB?status.svg)](http://godoc.org/github.com/hlts2/go-LB) [![Go Report Card](https://goreportcard.com/badge/github.com/hlts2/go-LB)](https://goreportcard.com/report/github.com/hlts2/go-LB) [![Join the chat at https://gitter.im/hlts2/go-LB](https://badges.gitter.im/hlts2/go-LB.svg)](https://gitter.im/hlts2/go-LB?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# glber [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![GoDoc](http://godoc.org/github.com/hlts2/glber?status.svg)](http://godoc.org/github.com/hlts2/glber) [![Go Report Card](https://goreportcard.com/badge/github.com/hlts2/glber)](https://goreportcard.com/report/github.com/hlts2/glber) [![Join the chat at https://gitter.im/hlts2/glber](https://badges.gitter.im/hlts2/glber.svg)](https://gitter.im/hlts2/glber?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-go-LB is a simple lightweight load balancer written in golang.
+glber is a simple lightweight load balancer written in golang.
 
 ## Requirement
 Go (>= 1.9)
@@ -8,7 +8,7 @@ Go (>= 1.9)
 ## Installation
 
 ```shell
-go get github.com/hlts2/go-LB
+go get github.com/hlts2/glber
 ```
 
 ## Example
@@ -55,18 +55,18 @@ balancing: round-robin # or ip-hash or least-connections
 ### Basic Example
 
 ```
-$ go-LB serve -s config.yml
+$ glber serve -s config.yml
 ```
 
 ## CLI Usage
 
 ```
-$ go-LB --help
+$ glber --help
 NAME:
-   go-LB - Load Balancer
+   glber - Load Balancer
 
 USAGE:
-   go-LB [global options] command [command options] [arguments...]
+   glber [global options] command [command options] [arguments...]
 
 VERSION:
    v1.0.0
@@ -83,13 +83,13 @@ GLOBAL OPTIONS:
 ### Serve command
 
 ```
-$ go-LB serve --help
+$ glber serve --help
 NAME:
-   go-LB serve - serve load balancer
+   glber serve - serve load balancer
 
 USAGE:
-   go-LB serve [command options] [arguments...]
-   
+   glber serve [command options] [arguments...]
+
 OPTIONS:
    --set value, -s value  set the configuration file (default: "config.yml")
 ```
@@ -102,4 +102,4 @@ OPTIONS:
 [hlts2](https://github.com/hlts2)
 
 ## LICENSE
-go-LB released under MIT license, refer [LICENSE](https://github.com/hlts2/go-LB/blob/master/LICENSE) file.
+glber released under MIT license, refer [LICENSE](https://github.com/hlts2/glber/blob/master/LICENSE) file.

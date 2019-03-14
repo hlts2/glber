@@ -7,12 +7,12 @@ import (
 	"github.com/pkg/errors"
 	"github.com/urfave/cli"
 
-	"github.com/hlts2/go-LB/cmd"
+	"github.com/hlts2/glber/cmd"
 )
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "go-LB"
+	app.Name = "glber"
 	app.Usage = "Load Balancer"
 	app.Version = "v1.0.0"
 	app.Commands = cli.Commands{
