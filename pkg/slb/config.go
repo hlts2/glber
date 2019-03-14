@@ -39,7 +39,7 @@ func Load(path string, cfg *Config) error {
 type Balancing string
 
 // CreateHandler returns balancer.Handler implementation.
-// If set invalid balancing algorithm, the default balancing algorithm(round-robin) is used.
+// If set invalid balancing algorithm, returns the default balancing algorithm(round-robin).
 func (b Balancing) CreateHandler(urls []*url.URL, proxier balancer.Proxier) balancer.Handler {
 	switch b {
 	case RoundRobin:
