@@ -1,5 +1,4 @@
 host: 0.0.0.0
-scheme: http
 port: 8080
 balancing: round-robin
 servers:
