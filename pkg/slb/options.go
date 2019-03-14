@@ -9,7 +9,7 @@ import (
 // Option configures serverLoadBalancer.
 type Option func(*serverLoadBalancer)
 
-// HandlerDirector --
+// HandlerDirector type is director to generate handler.Handler implementation.
 type HandlerDirector func(urls []*url.URL, proxier balancer.Proxier) balancer.Handler
 
 // WithBalancingHandlerDirector returns an Option that sets the Balancer.Handler implementation.
