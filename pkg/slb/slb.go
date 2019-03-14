@@ -2,6 +2,7 @@ package slb
 
 import (
 	"context"
+	"crypto/tls"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -72,46 +73,57 @@ func (s *serverLoadBalancer) Proxy(target *url.URL, w http.ResponseWriter, req *
 	}).ServeHTTP(w, req)
 }
 
-func (s *serverLoadBalancer) Serve() error {
-	lis, err := createListener(s.ServerConfig.Host, s.ServerConfig.Port)
-	if err != nil {
-		return errors.Wrap(err, "faild to create listener")
+func (s *serverLoadBalancer) ListenAndServe() error {
+	addr := s.Config.Host + ":" + s.Config.Port
+
+	var (
+		ls  net.Listener
+		err error
+	)
+
+	if s.Config.TLSConfig.Enabled {
+		ls, err = createTLSListenter(addr, s.Config.TLSConfig.CertKey, s.Config.TLSConfig.KeyKey)
+		if err != nil {
+			return errors.Wrap(err, "faild to create tls lisner")
+		}
+	} else {
+		ls, err = createListener(addr)
+		if err != nil {
+			return errors.Wrap(err, "faild to create listener")
+		}
 	}
 
-	err = s.Server.Serve(lis)
+	err = s.Server.Serve(ls)
 	if err != nil {
 		return errors.Wrap(err, "faild to serve")
 	}
 	return nil
 }
 
-func (s *serverLoadBalancer) ServeTLS(certFile, keyFile string) error {
-	lis, err := createListener(s.ServerConfig.Host, s.ServerConfig.Port)
+func createListener(addr string) (net.Listener, error) {
+	ls, err := net.Listen("tcp", addr)
 	if err != nil {
-		return errors.Wrap(err, "faild to create listener")
+		return nil, errors.Wrapf(err, "faild to create lisner, network: tcp, addr: %s", addr)
 	}
-
-	err = s.Server.ServeTLS(lis, certFile, keyFile)
-	if err != nil {
-		return errors.Wrap(err, "faild to serve with TLS")
-	}
-
-	return nil
+	return ls, nil
 }
 
-func createListener(host, port string) (net.Listener, error) {
-	addr := host + ":" + port
-
-	lis, err := net.Listen("tcp", addr)
+func createTLSListenter(addr string, certFile, keyFile string) (net.Listener, error) {
+	cert, err := tls.LoadX509KeyPair(certFile, keyFile)
 	if err != nil {
-		return nil, errors.Wrapf(err, "faild to listen: %v", addr)
+		return nil, errors.Wrapf(err, "faild to load 509 key parir, certFile: %s, keyFile: %s", certFile, keyFile)
 	}
 
-	return lis, nil
-}
+	cfg := &tls.Config{
+		Certificates: []tls.Certificate{cert},
+	}
 
-func (s *serverLoadBalancer) ListenAndServe() error {
-	return nil
+	ls, err := tls.Listen("tcp", addr, cfg)
+	if err != nil {
+		return nil, errors.Wrapf(err, "faild to create listener, network: tcp, addr: %s", addr)
+	}
+
+	return ls, nil
 }
 
 func (s *serverLoadBalancer) Shutdown(ctx context.Context) error {
