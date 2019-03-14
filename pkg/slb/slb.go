@@ -8,15 +8,13 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/kpango/glg"
 	"github.com/pkg/errors"
 )
 
 // Server is an interface for representing server load balancer implementation.
 type Server interface {
-	Serve() error
-	ServeTLS(certFile, keyFile string) error
-	Shutdown()
+	ListenAndServe() error
+	Shutdown(context.Context) error
 }
 
 type serverLoadBalancer struct {
@@ -112,15 +110,17 @@ func createListener(host, port string) (net.Listener, error) {
 	return lis, nil
 }
 
-func (s *serverLoadBalancer) Shutdown() {
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+func (s *serverLoadBalancer) ListenAndServe() error {
+	return nil
+}
+
+func (s *serverLoadBalancer) Shutdown(ctx context.Context) error {
+	ctx, cancel := context.WithTimeout(ctx, 60*time.Second)
 	defer cancel()
 
 	err := s.Server.Shutdown(ctx)
-
-	glg.Info("All http(s) requets finished")
-
 	if err != nil {
-		glg.Errorf("faild to shutdown server load balancer: %v", err)
+		return errors.Wrap(err, "faild to shutdown")
 	}
+	return nil
 }
