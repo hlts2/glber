@@ -19,8 +19,8 @@ type leastconnectionsHandler struct {
 
 func (h *leastconnectionsHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	src, done := h.lc.Next()
-	defer done()
 	h.proxier.Proxy(src, w, req)
+	done()
 }
 
 func (h *leastconnectionsHandler) isBalaner() {}
