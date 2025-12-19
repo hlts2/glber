@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/hlts2/round-robin"
+	roundrobin "github.com/hlts2/round-robin"
 
 	"github.com/hlts2/glber/pkg/slb/balancer"
 )
@@ -24,7 +24,7 @@ func (h *roundrobinHandler) isBalaner() {}
 
 // New returns balancer.Handler implementation(*roundrobin).
 func New(urls []*url.URL, proxier balancer.Proxier) balancer.Handler {
-	rr, _ := roundrobin.New(urls)
+	rr, _ := roundrobin.New(urls...)
 
 	return &roundrobinHandler{
 		rr:      rr,
